@@ -1,0 +1,131 @@
+# Claude Code 專案指引
+
+## 啟動流程（每次新 Session 必讀）
+
+1. **閱讀專案狀態**：讀取 `.claude/SUMMARY.md` 了解專案整體狀態與待辦事項
+2. **確認工作項目**：根據 SUMMARY 中的待辦清單，詢問使用者要處理哪個項目
+
+> **注意**：HISTORY.md 僅在需要查詢歷史細節時才讀取，平時不必載入以節省 token
+
+## 程式碼規範（生成程式碼前必讀）
+
+**重要**：在撰寫或修改任何程式碼之前，必須遵循 `.claude/skills.md` 中定義的開發規範，包括：
+
+詳細規範請參閱：[`.claude/skills.md`](.claude/skills.md)
+
+## 功能開發計畫（開發前必讀）
+
+開發以下功能時，**必須先讀取對應的設計文件**：
+
+| 功能 | 設計文件 | 實作計畫 |
+|------|---------|---------|
+| PDF 振り仮名標注工具 | `docs/plans/2026-02-13-furigana-tool-design.md` | `docs/plans/2026-02-13-furigana-tool-plan.md` |
+
+**開發流程**：
+
+1. 讀取設計文件，了解組件規格
+2. 讀取實作計畫，按照 Task 順序逐步執行（TDD 流程）
+3. 完成後更新設計文件中的狀態（⏳ → ✅）
+
+## 任務完成檢查（每次任務結束必做）
+
+⚠️ **在回報「完成」之前，必須確認：**
+
+1. [ ] 已更新 `.claude/HISTORY.md`（新增本次變更紀錄）
+2. [ ] 已更新 `.claude/SUMMARY.md`（如有狀態或結構變更）
+3. 確認程式碼是否有符合設計規範
+
+**無論任務大小（包含 bug 修復、緊急修復），都必須執行此檢查。**
+
+> 這是強制性流程，不可跳過。若忘記執行，用戶有權要求補做。
+
+## Session 結束流程
+
+每次對話結束或完成重要工作後，必須更新以下檔案：
+
+### 1. 更新 `.claude/HISTORY.md`
+
+在檔案**最上方**新增一筆紀錄，格式如下：
+
+> **時間格式**：使用台北時間 (UTC+8)，24 小時制
+
+```markdown
+## [YYYY-MM-DD HH:mm] @開發者名稱
+
+### 處理項目
+
+- 項目名稱或任務描述
+
+### 實作方式
+
+- 具體做了什麼
+- 修改了哪些檔案
+- 使用了什麼技術或方法
+
+### 變更檔案
+
+- `path/to/file1.ts` - 變更說明
+- `path/to/file2.tsx` - 變更說明
+
+---
+```
+
+### 2. 更新 `.claude/SUMMARY.md`
+
+更新專案狀態摘要：
+
+- 專案當前狀態
+- 已完成項目清單（含日期，作為長期紀錄）
+- 待完成項目清單
+- 重要決策與架構變更
+
+### 3. 歸檔機制（當 HISTORY.md 超過 15 筆）
+
+當 HISTORY.md 紀錄超過 15 筆時，執行歸檔：
+
+1. 保留最近 10 筆在 `HISTORY.md`
+2. 將較舊的紀錄移至 `.claude/archive/HISTORY-YYYY-MM.md`
+3. 確保 SUMMARY.md 已包含被歸檔項目的摘要
+
+```
+.claude/
+├── SUMMARY.md          # 必讀 - 專案狀態摘要
+├── HISTORY.md          # 最近 10-15 筆紀錄
+└── archive/
+    └── HISTORY-YYYY-MM.md  # 歸檔紀錄
+```
+
+## 多人協作規範
+
+## 專案特定規範
+
+### 技術棧
+
+- **後端**：Python 3.11+ / FastAPI / PyMuPDF / fugashi (MeCab) / unidic-lite / Jinja2
+- **前端**：React + TypeScript / Vite
+- **測試**：pytest / Vitest
+
+### 專案結構
+
+```
+asmr_pdf_script_add_Furigana/
+├── backend/              # Python FastAPI 後端
+│   ├── app/
+│   │   ├── main.py       # FastAPI 入口 + CORS
+│   │   ├── routers/      # API 路由
+│   │   └── services/     # 業務邏輯（PDF 提取、振り仮名、HTML 產生）
+│   ├── tests/
+│   └── requirements.txt
+├── frontend/             # React + Vite 前端
+│   ├── src/
+│   │   ├── components/   # React 元件
+│   │   └── services/     # API 呼叫
+│   └── package.json
+├── docs/plans/           # 設計與實作文件
+└── .claude/              # Claude Code 設定與紀錄
+```
+
+### 程式碼風格
+
+- Python：遵循 PEP 8
+- TypeScript：React 函式元件 + Hooks
