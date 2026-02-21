@@ -5,7 +5,7 @@ export interface ConvertResponse {
   page_count: number;
 }
 
-export async function convertPdf(file: File): Promise<ConvertResponse> {
+export async function convertFile(file: File): Promise<ConvertResponse> {
   const formData = new FormData();
   formData.append("file", file);
 

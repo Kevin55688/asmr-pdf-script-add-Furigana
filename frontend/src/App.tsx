@@ -2,7 +2,7 @@ import { useState } from "react";
 import { FileUploader } from "./components/FileUploader";
 import { PagedPreview } from "./components/PagedPreview";
 import { ProgressBar } from "./components/ProgressBar";
-import { convertPdf } from "./services/api";
+import { convertFile } from "./services/api";
 
 type AppState = "idle" | "uploading" | "success" | "error";
 
@@ -20,7 +20,7 @@ function App() {
     setFileName(file.name);
 
     try {
-      const result = await convertPdf(file);
+      const result = await convertFile(file);
       setHtml(result.html);
       setPageCount(result.page_count);
       setAppState("success");
