@@ -40,6 +40,12 @@
 - 更新專案狀態標題（例：Task 3/12 完成）
 - 更新「最後更新」日期
 
+**Commit 順序規定：**
+
+> ⚠️ **必須先更新 SUMMARY.md，再執行 git commit。**
+> 不可先 commit 程式碼、再更新 SUMMARY.md，否則會產生額外的 chore commit。
+> 正確順序：測試通過 → 更新 SUMMARY.md → `git add`（含 SUMMARY.md）→ `git commit`
+
 **無論任務大小（包含 bug 修復、緊急修復），都必須執行此檢查。**
 
 > 這是強制性流程，不可跳過。若忘記執行，用戶有權要求補做。
