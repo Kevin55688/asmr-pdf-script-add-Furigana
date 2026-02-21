@@ -1,5 +1,28 @@
 # 變更紀錄
 
+## [2026-02-21 24:30] @Claude
+
+### 處理項目
+
+- TXT 支援功能：需求探討、設計、實作計畫（新功能規劃）
+
+### 實作方式
+
+- 使用 brainstorming skill 逐步釐清需求：分頁策略（整個檔案視為 1 頁）、編碼（UTF-8）、API 方案（單一端點依副檔名分派）
+- 選定方案 A（單一 `/api/convert` 端點），改動最小、前後端介面穩定
+- 設計文件涵蓋：架構、資料流、前後端改動點、測試策略
+- 撰寫 4 個 Task 的 TDD 實作計畫（txt_extractor → convert.py → api.ts → FileUploader）
+- 實作將在獨立 session 以 executing-plans skill 執行
+
+### 變更檔案
+
+- `docs/plans/2026-02-21-txt-support-design.md` - 新增 TXT 支援設計文件
+- `docs/plans/2026-02-21-txt-support-plan.md` - 新增 TXT 支援實作計畫（4 Tasks，TDD）
+- `.claude/SUMMARY.md` - 更新專案狀態（待實作）
+- `.claude/HISTORY.md` - 新增本次變更紀錄
+
+---
+
 ## [2026-02-21 23:55] @Claude
 
 ### 處理項目
