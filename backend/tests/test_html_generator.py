@@ -1,4 +1,4 @@
-from app.services.html_generator import generate_html
+from app.services.html_generator import generate_html, generate_html_from_script_txt
 
 
 def test_generate_html_single_page():
@@ -33,3 +33,39 @@ def test_generate_html_preserves_paragraphs():
     result = generate_html(pages)
     # 每個段落應該被包在 <p> 標籤中
     assert result.count("<p>") >= 2
+
+
+# --- generate_html_from_script_txt ---
+
+def test_script_txt_separator_becomes_hr():
+    result = generate_html_from_script_txt("-----------------------")
+    assert "<hr" in result
+
+
+def test_script_txt_japanese_gets_furigana():
+    result = generate_html_from_script_txt("東京に行く")
+    assert "<ruby>" in result
+
+
+def test_script_txt_english_preserved():
+    result = generate_html_from_script_txt("You took long.")
+    assert "You took long." in result
+
+
+def test_script_txt_empty_lines_skipped():
+    result = generate_html_from_script_txt("遅かったね\n\n東京")
+    assert result.count("<p") == 2
+
+
+def test_script_txt_full_block():
+    text = "-----------------------\n遅かったね\nYou took long."
+    result = generate_html_from_script_txt(text)
+    assert "<hr" in result
+    assert "<ruby>" in result
+    assert "You took long." in result
+
+
+def test_script_txt_wraps_in_section():
+    result = generate_html_from_script_txt("テスト")
+    assert 'class="page"' in result
+    assert 'data-page="1"' in result

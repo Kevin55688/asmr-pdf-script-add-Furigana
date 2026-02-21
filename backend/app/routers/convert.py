@@ -3,9 +3,8 @@ from pathlib import Path
 
 from fastapi import APIRouter, File, HTTPException, UploadFile
 
-from app.services.html_generator import generate_html
+from app.services.html_generator import generate_html, generate_html_from_script_txt
 from app.services.pdf_extractor import extract_text_by_pages
-from app.services.txt_extractor import extract_text_from_txt
 
 router = APIRouter()
 
@@ -39,9 +38,8 @@ async def convert_file(file: UploadFile = File(...)):
         except UnicodeDecodeError:
             raise HTTPException(status_code=400, detail="TXT 檔案必須為 UTF-8 編碼")
 
-        pages = extract_text_from_txt(text)
-        html = generate_html(pages)
-        return {"html": html, "page_count": len(pages)}
+        html = generate_html_from_script_txt(text)
+        return {"html": html, "page_count": 1}
 
     else:
         raise HTTPException(status_code=400, detail="只接受 PDF 或 TXT 檔案")
