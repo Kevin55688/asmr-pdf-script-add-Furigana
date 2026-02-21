@@ -1,1 +1,17 @@
 @import "tailwindcss";
+
+@theme {
+  --color-washi: #F9F4EE;
+  --color-ink: #3D3D3D;
+  --color-ink-light: #7A7A7A;
+  --color-vermilion: #C0392B;
+  --color-vermilion-light: #E8503F;
+  --color-paper: #FFFFFF;
+  --color-washi-border: #E2D9CE;
+}
+
+@keyframes indeterminate {
+  0%   { transform: translateX(-100%); width: 40%; }
+  50%  { transform: translateX(60%);   width: 60%; }
+  100% { transform: translateX(200%);  width: 40%; }
+}
