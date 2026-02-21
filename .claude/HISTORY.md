@@ -1,5 +1,26 @@
 # 變更紀錄
 
+## [2026-02-22 08:01] @Claude
+
+### 處理項目
+
+- 翻譯功能 Task 4：HtmlPreview ruby toggle + 翻譯顯示（TDD）
+
+### 實作方式
+
+- 完整替換 `HtmlPreview.test.tsx`：新增 5 個測試（`showRuby` toggle、翻譯文字顯示、isTranslating skeleton、未傳 translations 不顯示），共 9 tests
+- 完整重寫 `HtmlPreview.tsx`：新增 `showRuby`、`translations`、`isTranslating` props；以 `DOMParser` 解析 `<p>` 段落，逐段顯示翻譯列或 skeleton
+- `index.css` 末尾加入 `.hide-ruby rt { display: none; }`
+- TDD 流程：測試先失敗（3 個）→ 實作後 9/9 通過 → 全部前端 27 tests passed
+
+### 變更檔案
+
+- `frontend/src/components/HtmlPreview.tsx` - 重寫，支援 showRuby toggle 與段落翻譯顯示
+- `frontend/src/components/HtmlPreview.test.tsx` - 更新為 9 個測試
+- `frontend/src/index.css` - 新增 .hide-ruby rt 隱藏規則
+
+---
+
 ## [2026-02-21 16:00] @Claude
 
 ### 處理項目
