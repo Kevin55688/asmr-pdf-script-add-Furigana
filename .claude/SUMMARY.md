@@ -7,9 +7,9 @@
 
 - **專案名稱**：PDF 振り仮名標注工具 (asmr_pdf_script_add_Furigana)
 - **技術棧**：Python (FastAPI + PyMuPDF + fugashi/MeCab) / React + TypeScript (Vite)
-- **最後更新**：2026-02-21（Task 6 完成）
+- **最後更新**：2026-02-21（Task 7 完成）
 
-## 專案狀態：🟢 實作進行中（Task 6/12 完成）
+## 專案狀態：🟢 實作進行中（Task 7/12 完成）
 
 ## 開發規範符合度
 
@@ -26,6 +26,7 @@
 - [2026-02-21] Task 4：PDF 文字提取服務 (TDD) — `extract_text_by_pages`（16 tests passed，使用 script.pdf 為真實測試資料）
 - [2026-02-21] Task 5：HTML 產生器 (TDD) — `generate_html`（4 tests passed，全部 20 tests passed）
 - [2026-02-21] Task 6：FastAPI 應用與 /api/convert 端點 (TDD) — `main.py` + `routers/convert.py`（4 tests passed，全部 24 tests passed）
+- [2026-02-21] Task 7：前端專案初始化 — Vite + React + TypeScript 腳手架建立，編譯驗證通過
 
 ### ⏳ 待完成項目（實作計畫 12 個 Task）
 
@@ -35,7 +36,7 @@
 4. [x] Task 4：PDF 文字提取服務 (TDD)
 5. [x] Task 5：HTML 產生器 (TDD)
 6. [x] Task 6：FastAPI 應用與 /api/convert 端點 (TDD)
-7. [ ] Task 7：前端專案初始化 (Vite + React + TS)
+7. [x] Task 7：前端專案初始化 (Vite + React + TS)
 8. [ ] Task 8：前端 API 服務層
 9. [ ] Task 9：FileUploader 拖放上傳元件
 10. [ ] Task 10：ProgressBar + HtmlPreview 元件
@@ -53,7 +54,7 @@ asmr_pdf_script_add_Furigana/
 │   │   └── services/     # PDF 提取、振り仮名、HTML 產生
 │   ├── tests/
 │   └── requirements.txt
-├── frontend/             # React + Vite 前端（尚未建立）
+├── frontend/             # React + Vite 前端（已初始化）
 │   ├── src/
 │   │   ├── components/   # FileUploader, ProgressBar, HtmlPreview
 │   │   └── services/     # API 呼叫
@@ -80,3 +81,4 @@ asmr_pdf_script_add_Furigana/
 - @Claude — 2026-02-21 — Task 1–3 實作（後端初始化、furigana 工具函式、振り仮名核心邏輯）
 - @Claude — 2026-02-21 — Task 4–5 實作（PDF 文字提取、HTML 產生器）
 - @Claude — 2026-02-21 — Task 6 實作（FastAPI main.py + /api/convert 端點，24 tests passed）
+- @Claude — 2026-02-21 — Task 7 實作（前端 Vite + React + TS 初始化，清理預設檔案）
