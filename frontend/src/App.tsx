@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { FileUploader } from "./components/FileUploader";
-import { HtmlPreview } from "./components/HtmlPreview";
+import { PagedPreview } from "./components/PagedPreview";
 import { ProgressBar } from "./components/ProgressBar";
 import { convertPdf } from "./services/api";
 
@@ -73,7 +73,7 @@ function App() {
         )}
 
         {appState === "success" && html && (
-          <HtmlPreview html={html} pageCount={pageCount} />
+          <PagedPreview html={html} pageCount={pageCount} />
         )}
       </main>
     </div>

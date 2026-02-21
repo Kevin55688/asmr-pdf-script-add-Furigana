@@ -7,44 +7,13 @@
 
 - **專案名稱**：PDF 振り仮名標注工具 (asmr_pdf_script_add_Furigana)
 - **技術棧**：Python (FastAPI + PyMuPDF + fugashi/MeCab) / React + TypeScript (Vite)
-- **最後更新**：2026-02-21（UI 重設計計畫完成，待實作）
+- **最後更新**：2026-02-21（UI 重設計全部完成）
 
-## 專案狀態：🚧 進行中（UI 重設計待實作）
+## 專案狀態：✅ UI 重設計完成（待下一步規劃）
 
-## 待完成項目（依優先順序）
+## 待完成項目
 
-> 實作計畫：`docs/plans/2026-02-21-ui-redesign-plan.md`（共 6 Tasks）
-> 設計文件：`docs/plans/2026-02-21-ui-redesign-design.md`
-> ⚠️ 舊分頁計畫（`pagination-plan.md`）已被此計畫的 Task 5 取代
-
-- [ ] **[P1] Task 1**：色彩 Token 設定（`@theme` 寫入 `index.css`）
-  - 建立 washi / vermilion / ink 等 Tailwind v4 色彩變數
-  - 無相依，可立即執行
-
-- [ ] **[P2] Task 2**：ProgressBar 重設計（TDD）
-  - 預設訊息改「振り仮名を処理中...」、進度條改朱紅
-  - 相依：Task 1（色彩 token）
-
-- [ ] **[P3] Task 3**：FileUploader 重設計（TDD）
-  - 新增 `collapsed` prop、收起態紙籤條、全 Tailwind 改寫
-  - 新增 `FileUploader.test.tsx`（4 tests）
-  - 相依：Task 1（色彩 token）
-
-- [ ] **[P4] Task 4**：Header + App.tsx 重構
-  - 新增和風 Header（朱紅豎線 Logo）
-  - App 改為狀態機（AppState）、移除 `App.css` import
-  - 相依：Task 2、3
-
-- [ ] **[P5] Task 5**：PagedPreview 新增（frontend-design → TDD → 實作）
-  - 呼叫 `frontend-design` skill 設計導覽列 UI
-  - 新增 `PagedPreview.test.tsx`（9 tests）
-  - 相依：Task 4
-
-- [ ] **[P6] Task 6**：整合清理 + 最終驗證
-  - App.tsx 換用 `PagedPreview`、刪除 `App.css`
-  - 全測試通過 + `npm run build` 驗證
-  - 更新 SUMMARY.md
-  - 相依：Task 5
+> 目前無待完成項目
 
 ## 已完成項目
 
@@ -53,6 +22,10 @@
 - [2026-02-21] 前端全部實作（FileUploader、ProgressBar、HtmlPreview、App 整合）— 7 tests passed
 - [2026-02-21] 端對端整合測試通過（後端 :8000 + 前端 :5173）
 - [2026-02-21] 前端分頁功能腦力激盪與設計完成（方案 C：PagedPreview 包裝層）
+- [2026-02-21] UI 重設計 Task 1-3 完成（色彩 Token、ProgressBar、FileUploader 重設計，11 tests passed）
+- [2026-02-21] UI 重設計 Task 4 完成（Header + App.tsx 重構，AppState 狀態機，11 tests passed）
+- [2026-02-21] UI 重設計 Task 5 完成（PagedPreview 新增，和風導覽列，20 tests passed）
+- [2026-02-21] UI 重設計 Task 6 完成（App.tsx 換用 PagedPreview、刪除 App.css，20 tests + build 通過）
 
 ## 專案結構
 
