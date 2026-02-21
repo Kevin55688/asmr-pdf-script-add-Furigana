@@ -35,12 +35,25 @@ def test_convert_with_pdf(japanese_pdf):
     assert data["page_count"] == 1
 
 
-def test_convert_rejects_non_pdf():
+def test_convert_rejects_unknown_extension():
     response = client.post(
         "/api/convert",
-        files={"file": ("test.txt", b"not a pdf", "text/plain")},
+        files={"file": ("test.csv", b"col1,col2", "text/csv")},
     )
     assert response.status_code == 400
+
+
+def test_convert_with_txt():
+    txt_content = "東京は日本の首都です。\n\n大阪は関西の中心地です。"
+    response = client.post(
+        "/api/convert",
+        files={"file": ("script.txt", txt_content.encode("utf-8"), "text/plain")},
+    )
+    assert response.status_code == 200
+    data = response.json()
+    assert "html" in data
+    assert "page_count" in data
+    assert data["page_count"] == 1
 
 
 def test_health_check():

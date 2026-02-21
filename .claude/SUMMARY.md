@@ -7,14 +7,13 @@
 
 - **專案名稱**：PDF 振り仮名標注工具 (asmr_pdf_script_add_Furigana)
 - **技術棧**：Python (FastAPI + PyMuPDF + fugashi/MeCab) / React + TypeScript (Vite)
-- **最後更新**：2026-02-21（TXT 支援 Task 1 完成）
+- **最後更新**：2026-02-21（TXT 支援 Task 2 完成）
 
-## 專案狀態：⏳ TXT 支援實作中（Task 1/4 完成）
+## 專案狀態：⏳ TXT 支援實作中（Task 2/4 完成）
 
 ## 待完成項目
 
-- [ ] TXT 支援實作（Task 2–4 待執行）— 計畫見 `docs/plans/2026-02-21-txt-support-plan.md`
-  - Task 2: 修改 `convert.py` 分派邏輯，更新 API 測試
+- [ ] TXT 支援實作（Task 3–4 待執行）— 計畫見 `docs/plans/2026-02-21-txt-support-plan.md`
   - Task 3: `api.ts` 改名 `convertFile`，更新 `App.tsx`
   - Task 4: `FileUploader` 支援 `.txt`，更新前端測試
 
@@ -32,6 +31,7 @@
 - [2026-02-21] 修復縦書き PDF 提取：自動偵測排版方向、按右欄→左欄讀序、合併同欄相鄰 block — 26 tests passed（29 碎片段落 → 11 有意義段落）
 - [2026-02-21] TXT 支援設計與計畫完成（brainstorming → 設計文件 → 4-Task TDD 實作計畫）
 - [2026-02-21] TXT 支援 Task 1 完成：新增 `txt_extractor.py`（6 tests passed）
+- [2026-02-21] TXT 支援 Task 2 完成：`convert.py` 支援 `.txt` 分派，33 tests passed
 
 ## 專案結構
 
