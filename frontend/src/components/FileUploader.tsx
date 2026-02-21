@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from "react";
 
 interface FileUploaderProps {
   onFileSelect: (file: File) => void;
@@ -23,8 +23,11 @@ export function FileUploader({
       e.preventDefault();
       setIsDragging(false);
       const file = e.dataTransfer.files[0];
-      if (file && file.type === 'application/pdf') {
-        onFileSelect(file);
+      if (file) {
+        const ext = file.name.toLowerCase().split(".").pop();
+        if (ext === "pdf" || ext === "txt") {
+          onFileSelect(file);
+        }
       }
     },
     [onFileSelect],
@@ -58,22 +61,27 @@ export function FileUploader({
   return (
     <div
       className={[
-        'rounded-lg border-2 border-dashed border-vermilion p-12 text-center cursor-pointer transition-all duration-300',
-        isDragging ? 'border-solid bg-[#FFF5F5]' : 'bg-paper hover:bg-[#FFF5F5] hover:border-solid',
-        disabled ? 'opacity-50 pointer-events-none' : '',
-      ].join(' ')}
-      onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
+        "rounded-lg border-2 border-dashed border-vermilion p-12 text-center cursor-pointer transition-all duration-300",
+        isDragging
+          ? "border-solid bg-[#FFF5F5]"
+          : "bg-paper hover:bg-[#FFF5F5] hover:border-solid",
+        disabled ? "opacity-50 pointer-events-none" : "",
+      ].join(" ")}
+      onDragOver={(e) => {
+        e.preventDefault();
+        setIsDragging(true);
+      }}
       onDragLeave={() => setIsDragging(false)}
       onDrop={handleDrop}
       onClick={() => inputRef.current?.click()}
     >
       <div className="mb-3 text-4xl text-vermilion">☁</div>
-      <p className="text-base font-medium text-ink">拖放 PDF 至此</p>
+      <p className="text-base font-medium text-ink">拖放 PDF 或 TXT 至此</p>
       <p className="mt-1 text-sm text-ink-light">或 點擊選擇檔案</p>
       <input
         ref={inputRef}
         type="file"
-        accept=".pdf"
+        accept=".pdf,.txt"
         onChange={handleChange}
         disabled={disabled}
         hidden
