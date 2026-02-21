@@ -1,5 +1,25 @@
 # 變更紀錄
 
+## [2026-02-21 23:55] @Claude
+
+### 處理項目
+
+- Task 12：端對端整合測試
+
+### 實作方式
+
+- 執行全部 24 個後端測試，全數通過（24 passed in 0.70s）
+- 啟動後端伺服器（uvicorn，port 8000），驗證 `/api/health` 回傳 `{"status":"ok"}`
+- 啟動前端開發伺服器（Vite，port 5173），驗證頁面回傳正確 HTML
+- 更新 SUMMARY.md 與 HISTORY.md，標記 Task 12/12 完成
+
+### 變更檔案
+
+- `.claude/SUMMARY.md` - 更新專案狀態為全部完成（Task 12/12）
+- `.claude/HISTORY.md` - 新增本次變更紀錄
+
+---
+
 ## [2026-02-13 22:00] @Claude
 
 ### 處理項目
