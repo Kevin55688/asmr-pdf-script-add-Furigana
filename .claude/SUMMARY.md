@@ -7,15 +7,20 @@
 
 - **專案名稱**：PDF 振り仮名標注工具 (asmr_pdf_script_add_Furigana)
 - **技術棧**：Python (FastAPI + PyMuPDF + fugashi/MeCab) / React + TypeScript (Vite)
-- **最後更新**：2026-02-21（TXT 腳本排版保留功能完成）
+- **最後更新**：2026-02-21（翻譯功能 Task 1 完成）
 
-## 專案狀態：✅ TXT 支援完成（含腳本排版保留）
+## 專案狀態：🔄 翻譯功能開發中（Task 1/5 完成）
 
 ## 待完成項目
 
-（無）
+- [ ] Task 2：後端 translate router（`/api/translate` 端點）
+- [ ] Task 3：前端 `translateTexts` API 函式
+- [ ] Task 4：HtmlPreview ruby toggle + 翻譯顯示
+- [ ] Task 5：PagedPreview 控制列 + 翻譯邏輯 + cache
 
 ## 已完成項目
+
+- [2026-02-21] 翻譯功能 Task 1 完成：新增 `translator.py`（支援 DeepL / Google / Claude，8 tests passed）
 
 - [2026-02-13] 需求探討、技術方案選型、系統架構設計
 - [2026-02-21] 後端全部實作（PDF 提取、振り仮名標注、HTML 產生、FastAPI API）— 24 tests passed
@@ -33,6 +38,7 @@
 - [2026-02-21] TXT 支援 Task 3 完成：`api.ts` `convertPdf` 改名 `convertFile`，前端 20 tests passed
 - [2026-02-21] TXT 支援 Task 4 完成：`FileUploader` 支援 `.txt` 拖放與選擇，前端 22 tests passed
 - [2026-02-21] TXT 腳本排版保留：`generate_html_from_script_txt` 逐行處理，`---` 變 `<hr>`，日文加振り仮名，英文翻譯保留原文，39 tests passed
+- [2026-02-21] 翻譯功能 Task 1 完成：新增 `translator.py`（支援 DeepL / Google / Claude，8 tests passed）
 
 ## 專案結構
 

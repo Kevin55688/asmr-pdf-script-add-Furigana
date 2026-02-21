@@ -1,5 +1,31 @@
 # 變更紀錄
 
+## [2026-02-21 15:30] @Claude
+
+### 處理項目
+
+- 翻譯功能 Task 1：後端 translator service（TDD）
+
+### 實作方式
+
+- 遵循 TDD 流程：先建立測試 → 確認 Red → 建立實作 → 確認 Green
+- 安裝 `anthropic` 套件（v0.83.0）與 `pytest-asyncio`（v1.3.0）
+- 建立 `pytest.ini` 設定 `asyncio_mode = auto`（原專案無此設定）
+- `translator.py` 實作三個供應商：DeepL（httpx POST）、Google（httpx POST）、Claude（Anthropic SDK）
+- 所有 API Key 未設定時拋出 `ValueError`，`texts=[]` 提早回傳空列表
+- 8 tests passed，既有 39 tests 全部維持通過
+
+### 變更檔案
+
+- `backend/requirements.txt` - 新增 `pytest-asyncio>=0.23.0`、`anthropic>=0.40.0`
+- `backend/pytest.ini` - 新增（設定 asyncio_mode=auto）
+- `backend/app/services/translator.py` - 新增（translator service）
+- `backend/tests/test_translator.py` - 新增（8 個測試）
+- `.claude/SUMMARY.md` - 更新專案狀態與待完成項目
+- `.claude/HISTORY.md` - 新增本次變更紀錄
+
+---
+
 ## [2026-02-21 24:30] @Claude
 
 ### 處理項目
