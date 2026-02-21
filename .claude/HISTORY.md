@@ -1,5 +1,27 @@
 # 變更紀錄
 
+## [2026-02-21 16:00] @Claude
+
+### 處理項目
+
+- 翻譯功能 Task 2：後端 translate router（TDD）
+
+### 實作方式
+
+- TDD 流程：先新增 3 個測試（確認失敗 → 404）→ 建立 router → 修改 main.py → 全部通過
+- `TranslateRequest` / `TranslateResponse` Pydantic model 定義在 router 內
+- ValueError（不支援的 provider、未設定 API key）轉為 HTTP 400
+- 其他例外轉為 HTTP 502
+- 50 tests passed
+
+### 變更檔案
+
+- `backend/tests/test_api.py` - 新增 3 個 /api/translate 測試
+- `backend/app/routers/translate.py` - 新增（POST /translate endpoint）
+- `backend/app/main.py` - 新增 translate router 注冊
+
+---
+
 ## [2026-02-21 15:30] @Claude
 
 ### 處理項目

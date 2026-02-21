@@ -59,3 +59,30 @@ def test_convert_with_txt():
 def test_health_check():
     response = client.get("/api/health")
     assert response.status_code == 200
+
+
+# ── /api/translate ──────────────────────────────────────────────────────────
+
+def test_translate_endpoint_exists():
+    response = client.post("/api/translate")
+    # 沒有 body 應該回 422
+    assert response.status_code == 422
+
+
+def test_translate_missing_api_key(monkeypatch):
+    monkeypatch.delenv("DEEPL_API_KEY", raising=False)
+    response = client.post(
+        "/api/translate",
+        json={"texts": ["テスト"], "provider": "deepl", "target_lang": "zh-TW"},
+    )
+    assert response.status_code == 400
+    assert "DEEPL_API_KEY" in response.json()["detail"]
+
+
+def test_translate_invalid_provider():
+    response = client.post(
+        "/api/translate",
+        json={"texts": ["テスト"], "provider": "unknown", "target_lang": "zh-TW"},
+    )
+    assert response.status_code == 400
+    assert "不支援" in response.json()["detail"]

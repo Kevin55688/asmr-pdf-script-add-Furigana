@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.routers import convert
+from app.routers import convert, translate
 
 app = FastAPI(title="PDF Furigana Tool")
 
@@ -13,6 +13,7 @@ app.add_middleware(
 )
 
 app.include_router(convert.router, prefix="/api")
+app.include_router(translate.router, prefix="/api")
 
 
 @app.get("/api/health")
