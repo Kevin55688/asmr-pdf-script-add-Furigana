@@ -1,1 +1,86 @@
-/* App styles - to be filled in Task 11 */
+.app {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-family: "Noto Sans JP", sans-serif;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.file-uploader {
+  border: 2px dashed #ccc;
+  border-radius: 8px;
+  padding: 3rem;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.2s, background-color 0.2s;
+}
+
+.file-uploader:hover,
+.file-uploader.dragging {
+  border-color: #4a90d9;
+  background-color: #f0f7ff;
+}
+
+.progress-bar {
+  margin: 1.5rem 0;
+  text-align: center;
+}
+
+.progress-bar__track {
+  height: 6px;
+  background: #e0e0e0;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress-bar__fill {
+  height: 100%;
+  background: #4a90d9;
+  border-radius: 3px;
+  animation: indeterminate 1.5s infinite ease-in-out;
+}
+
+@keyframes indeterminate {
+  0% { transform: translateX(-100%); width: 40%; }
+  50% { transform: translateX(60%); width: 60%; }
+  100% { transform: translateX(200%); width: 40%; }
+}
+
+.error {
+  color: #d32f2f;
+  text-align: center;
+  padding: 1rem;
+  background: #ffeaea;
+  border-radius: 4px;
+}
+
+.html-preview {
+  margin-top: 2rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 1.5rem;
+}
+
+.html-preview__content {
+  line-height: 2.5;
+  font-size: 1.1rem;
+}
+
+.html-preview__content ruby {
+  ruby-position: over;
+}
+
+.html-preview__content rt {
+  font-size: 0.6em;
+  color: #666;
+}
+
+.html-preview__content .page {
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #eee;
+}
