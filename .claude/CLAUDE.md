@@ -140,3 +140,13 @@ asmr_pdf_script_add_Furigana/
 
 - Python：遵循 PEP 8
 - TypeScript：React 函式元件 + Hooks
+
+### 前端設計規範
+
+**設計任何前端 UI 之前，必須遵循以下流程：**
+
+1. 使用 `frontend-design:frontend-design` skill 進行 UI 設計（產生高品質、有特色的介面）
+2. 所有樣式一律使用 **Tailwind CSS**，不使用 inline style 或額外 CSS 檔案
+3. 技術棧：React + TypeScript + Tailwind CSS
+
+> ⚠️ **強制規定**：前端 UI 設計前必須呼叫 `frontend-design` skill，不可跳過。
