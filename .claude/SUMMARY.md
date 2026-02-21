@@ -7,9 +7,9 @@
 
 - **專案名稱**：PDF 振り仮名標注工具 (asmr_pdf_script_add_Furigana)
 - **技術棧**：Python (FastAPI + PyMuPDF + fugashi/MeCab) / React + TypeScript (Vite)
-- **最後更新**：2026-02-21（Task 8 完成）
+- **最後更新**：2026-02-21（Task 9 完成）
 
-## 專案狀態：🟢 實作進行中（Task 8/12 完成）
+## 專案狀態：🟢 實作進行中（Task 9/12 完成）
 
 ## 開發規範符合度
 
@@ -28,6 +28,7 @@
 - [2026-02-21] Task 6：FastAPI 應用與 /api/convert 端點 (TDD) — `main.py` + `routers/convert.py`（4 tests passed，全部 24 tests passed）
 - [2026-02-21] Task 7：前端專案初始化 — Vite + React + TypeScript 腳手架建立，編譯驗證通過
 - [2026-02-21] Task 8：前端 API 服務層 — `frontend/src/services/api.ts`，`convertPdf` 函式，編譯驗證通過
+- [2026-02-21] Task 9：FileUploader 拖放上傳元件 — `frontend/src/components/FileUploader.tsx`，支援拖放與點擊選檔，編譯驗證通過
 
 ### ⏳ 待完成項目（實作計畫 12 個 Task）
 
@@ -39,7 +40,7 @@
 6. [x] Task 6：FastAPI 應用與 /api/convert 端點 (TDD)
 7. [x] Task 7：前端專案初始化 (Vite + React + TS)
 8. [x] Task 8：前端 API 服務層
-9. [ ] Task 9：FileUploader 拖放上傳元件
+9. [x] Task 9：FileUploader 拖放上傳元件
 10. [ ] Task 10：ProgressBar + HtmlPreview 元件
 11. [ ] Task 11：App 主元件整合 + 樣式
 12. [ ] Task 12：端對端整合測試
@@ -84,3 +85,4 @@ asmr_pdf_script_add_Furigana/
 - @Claude — 2026-02-21 — Task 6 實作（FastAPI main.py + /api/convert 端點，24 tests passed）
 - @Claude — 2026-02-21 — Task 7 實作（前端 Vite + React + TS 初始化，清理預設檔案）
 - @Claude — 2026-02-21 — Task 8 實作（前端 API 服務層，api.ts，編譯驗證通過）
+- @Claude — 2026-02-21 — Task 9 實作（FileUploader 拖放上傳元件，編譯驗證通過）
