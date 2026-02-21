@@ -36,6 +36,9 @@ async def translate(
 async def _translate_deepl(
     texts: list[str], target_lang: str, source_lang: str
 ) -> list[str]:
+    # 使用 DeepL Free API endpoint（api-free.deepl.com）
+    # Pro 帳號請將 DEEPL_API_KEY 設為 Pro Key，並注意 Free endpoint 對 Pro Key 會回傳 403
+    # 若使用 Pro 帳號，可將 URL 改為 https://api.deepl.com/v2/translate
     api_key = os.getenv("DEEPL_API_KEY")
     if not api_key:
         raise ValueError("未設定 DEEPL_API_KEY")
@@ -110,4 +113,11 @@ async def _translate_claude(
     if raw.startswith("```"):
         raw = raw.split("\n", 1)[1].rsplit("```", 1)[0].strip()
 
-    return json.loads(raw)
+    result = json.loads(raw)
+    if not isinstance(result, list):
+        raise ValueError(f"Claude 回傳格式錯誤：期望 list，得到 {type(result).__name__}")
+    if len(result) != len(texts):
+        raise ValueError(
+            f"Claude 回傳段落數量不符：期望 {len(texts)} 個，得到 {len(result)} 個"
+        )
+    return result
