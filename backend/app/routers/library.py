@@ -150,7 +150,7 @@ def get_document_html(doc_id: str):
     html = lib_svc.get_document_html(doc_id)
     if html is None:
         raise HTTPException(status_code=404, detail="Document HTML not found")
-    page_count = html.count('<section class="page">')
+    page_count = html.count('<section class="page"')
     if page_count == 0:
         page_count = 1
     return {"html": html, "page_count": page_count}

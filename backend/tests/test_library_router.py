@@ -143,3 +143,23 @@ def test_404_on_nonexistent(client):
     assert client.delete("/api/library/folders/f-notexist").status_code == 404
     assert client.patch("/api/library/documents/doc-notexist", json={}).status_code == 404
     assert client.delete("/api/library/documents/doc-notexist").status_code == 404
+
+
+def test_get_document_html_returns_correct_page_count_for_multi_page(client):
+    """多頁文件：get_document_html 應回傳正確頁數（而非永遠 1）"""
+    folder = client.post("/api/library/folders", json={"name": "f"}).json()
+    doc = client.post(
+        "/api/library/documents", json={"name": "d", "folderId": folder["id"]}
+    ).json()
+
+    # 直接寫入模擬 generate_html 產生的 3 頁 HTML（含 data-page 屬性）
+    three_page_html = '\n'.join([
+        '<section class="page" data-page="1"><p>Page 1</p></section>',
+        '<section class="page" data-page="2"><p>Page 2</p></section>',
+        '<section class="page" data-page="3"><p>Page 3</p></section>',
+    ])
+    lib_svc.set_document_html(doc["id"], three_page_html)
+
+    resp = client.get(f"/api/library/documents/{doc['id']}/html")
+    assert resp.status_code == 200
+    assert resp.json()["page_count"] == 3

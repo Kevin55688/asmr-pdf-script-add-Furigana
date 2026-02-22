@@ -7,7 +7,7 @@
 
 - **專案名稱**：PDF 振り仮名標注工具 (asmr_pdf_script_add_Furigana)
 - **技術棧**：Python (FastAPI + PyMuPDF + fugashi/MeCab) / React + TypeScript (Vite)
-- **最後更新**：2026-02-22（Sidebar 文件庫 Task 8 完成，前端共 75 tests passed）
+- **最後更新**：2026-02-22（修復問題 3：多頁文件頁數重啟後變 1/1，後端共 80 tests passed）
 
 ## 專案狀態：✅ Sidebar 文件庫功能全部完成（Task 1-8/8 完成）
 
@@ -29,6 +29,7 @@
 
 ## 已完成項目
 
+- [2026-02-22] 修復問題 3：`GET /api/library/documents/{id}/html` 的 `page_count` 計數字串由 `'<section class="page">'` 改為 `'<section class="page"'`，後端共 80 tests passed
 - [2026-02-22] Sidebar 文件庫 Task 8 完成：FolderItem 加入「+ 新增文件」按鈕（onAddDocument prop）、Sidebar 傳遞 onCreateDocument，前端共 75 tests passed
 - [2026-02-22] Sidebar 文件庫 Task 7 完成：App.tsx 重構整合 Sidebar / 文件庫狀態機（idle|loading|uploading|viewing）/ NotesPanel / 持久化，前端共 74 tests passed
 - [2026-02-22] Sidebar 文件庫 Task 5 完成：新增 DocumentContextMenu（右鍵選單）+ TagManager（Tag 管理）元件，Sidebar 整合右鍵選單與 Tag 管理按鈕，前端共 71 tests passed
@@ -65,6 +66,16 @@
 - [2026-02-21] TXT 支援 Task 4 完成：`FileUploader` 支援 `.txt` 拖放與選擇，前端 22 tests passed
 - [2026-02-21] TXT 腳本排版保留：`generate_html_from_script_txt` 逐行處理，`---` 變 `<hr>`，日文加振り仮名，英文翻譯保留原文，39 tests passed
 - [2026-02-21] 翻譯功能 Task 1 完成：新增 `translator.py`（支援 DeepL / Google / Claude，8 tests passed）
+
+## 已知問題
+
+> 發現問題時記錄於此，修復後移至「已完成項目」
+
+| # | 嚴重度 | 描述 | 發現日期 | 狀態 |
+|---|--------|------|----------|------|
+| 1 | 中 | 左側選單的資料夾無法設定所屬 Tag，導致無法透過 Tag 篩選整個資料夾 | 2026-02-22 | 🔴 待修復 |
+| 2 | 中 | 已翻譯過的文本，重新勾選翻譯並選擇供應商後按下翻譯鈕，不會顯示快取內容而是重新呼叫翻譯 API | 2026-02-22 | 🔴 待修復 |
+| 4 | 中 | 文件缺少編輯名稱與刪除功能（目前右鍵選單未實作對應操作） | 2026-02-22 | ✅ 已確認為誤報（Task 5/7 完成時已實作） |
 
 ## 專案結構
 
