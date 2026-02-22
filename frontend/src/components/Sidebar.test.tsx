@@ -4,14 +4,13 @@ import { Sidebar } from "./Sidebar";
 import type { Library } from "../services/libraryApi";
 
 const mockLibrary: Library = {
-  folders: [{ id: "f-001", name: "ASMR", order: 0 }],
+  folders: [{ id: "f-001", name: "ASMR", order: 0, tagIds: [] }],
   tags: [{ id: "t-001", name: "完成", color: "#4ade80" }],
   documents: [
     {
       id: "doc-001",
       name: "腳本 Vol.1",
       folderId: "f-001",
-      tagIds: [],
       htmlFile: "doc-001.html",
       lastPage: 0,
       notes: "",
@@ -23,7 +22,6 @@ const mockLibrary: Library = {
       id: "doc-002",
       name: "草稿",
       folderId: "f-001",
-      tagIds: [],
       htmlFile: null,
       lastPage: 0,
       notes: "",
@@ -189,12 +187,16 @@ describe("Sidebar", () => {
     vi.restoreAllMocks();
   });
 
-  it("tag 篩選隱藏不符合的文件", () => {
+  it("tag 篩選隱藏不符合的資料夾", () => {
     const libraryWithTag: Library = {
       ...mockLibrary,
+      folders: [
+        { id: "f-001", name: "ASMR", order: 0, tagIds: ["t-001"] },
+        { id: "f-002", name: "其他", order: 1, tagIds: [] },
+      ],
       documents: [
-        { ...mockLibrary.documents[0], tagIds: ["t-001"] },
-        { ...mockLibrary.documents[1], tagIds: [] },
+        { ...mockLibrary.documents[0], folderId: "f-001" },
+        { ...mockLibrary.documents[1], folderId: "f-002" },
       ],
     };
     render(
@@ -214,9 +216,10 @@ describe("Sidebar", () => {
         onCreateTag={noop}
         onDeleteTag={noop}
         onTagFilterChange={noop}
+        onUpdateFolderTags={noop}
       />,
     );
-    expect(screen.getByText("腳本 Vol.1")).toBeInTheDocument();
-    expect(screen.queryByText("草稿")).not.toBeInTheDocument();
+    expect(screen.getByText("ASMR")).toBeInTheDocument();
+    expect(screen.queryByText("其他")).not.toBeInTheDocument();
   });
 });

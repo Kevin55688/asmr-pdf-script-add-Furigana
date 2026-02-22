@@ -20,6 +20,7 @@ interface SidebarProps {
   onCreateTag: (name: string, color: string) => void;
   onDeleteTag: (id: string) => void;
   onTagFilterChange: (tagIds: string[]) => void;
+  onUpdateFolderTags: (id: string, tagIds: string[]) => void;
 }
 
 export function Sidebar({
@@ -36,20 +37,22 @@ export function Sidebar({
   onCreateTag,
   onDeleteTag,
   onTagFilterChange,
+  onUpdateFolderTags,
 }: SidebarProps) {
   const [collapsed, setCollapsed] = useState(false);
   const [dragDocId, setDragDocId] = useState<string | null>(null);
   const [contextMenu, setContextMenu] = useState<{
-    doc: Document; x: number; y: number;
+    doc: Document;
+    x: number;
+    y: number;
   } | null>(null);
   const [showTagManager, setShowTagManager] = useState(false);
 
-  const filteredDocs = (folderId: string) => {
-    return library.documents.filter((d) => {
-      if (d.folderId !== folderId) return false;
-      if (activeTags.length === 0) return true;
-      return activeTags.every((tid) => d.tagIds.includes(tid));
-    });
+  const filteredFolders = () => {
+    if (activeTags.length === 0) return library.folders;
+    return library.folders.filter((f) =>
+      activeTags.every((tid) => f.tagIds.includes(tid)),
+    );
   };
 
   return (
@@ -94,7 +97,9 @@ export function Sidebar({
                     }
                     className={[
                       "rounded-full px-2 py-0.5 text-[11px] font-medium transition-all",
-                      active ? "text-white ring-2 ring-offset-1" : "opacity-60 hover:opacity-100",
+                      active
+                        ? "text-white ring-2 ring-offset-1"
+                        : "opacity-60 hover:opacity-100",
                     ].join(" ")}
                     style={{ backgroundColor: tag.color }}
                   >
@@ -107,17 +112,22 @@ export function Sidebar({
 
           {/* Folder List */}
           <div className="flex-1 overflow-y-auto px-2 py-2">
-            {library.folders.map((folder) => (
+            {filteredFolders().map((folder) => (
               <FolderItem
                 key={folder.id}
                 folder={folder}
-                documents={filteredDocs(folder.id)}
+                documents={library.documents.filter(
+                  (d) => d.folderId === folder.id,
+                )}
+                tags={library.tags}
                 selectedDocId={selectedDocId}
                 onSelectDocument={(doc) => {
                   if (doc.htmlFile) onSelectDocument(doc);
                   else onUploadDocument(doc);
                 }}
-                onDocumentContextMenu={(e, doc) => setContextMenu({ doc, x: e.clientX, y: e.clientY })}
+                onDocumentContextMenu={(e, doc) =>
+                  setContextMenu({ doc, x: e.clientX, y: e.clientY })
+                }
                 onDocumentDragStart={(e, doc) => {
                   setDragDocId(doc.id);
                   e.dataTransfer.effectAllowed = "move";
@@ -126,7 +136,10 @@ export function Sidebar({
                   if (dragDocId) onMoveDocument(dragDocId, folderId);
                   setDragDocId(null);
                 }}
-                onAddDocument={(folderId, name) => onCreateDocument(name, folderId)}
+                onAddDocument={(folderId, name) =>
+                  onCreateDocument(name, folderId)
+                }
+                onUpdateFolderTags={onUpdateFolderTags}
               />
             ))}
           </div>
@@ -158,10 +171,22 @@ export function Sidebar({
           x={contextMenu.x}
           y={contextMenu.y}
           onClose={() => setContextMenu(null)}
-          onRename={(id, name) => { onRenameDocument(id, name); setContextMenu(null); }}
-          onDelete={(id) => { onDeleteDocument(id); setContextMenu(null); }}
-          onMove={(docId, folderId) => { onMoveDocument(docId, folderId); setContextMenu(null); }}
-          onUpload={(doc) => { onUploadDocument(doc); setContextMenu(null); }}
+          onRename={(id, name) => {
+            onRenameDocument(id, name);
+            setContextMenu(null);
+          }}
+          onDelete={(id) => {
+            onDeleteDocument(id);
+            setContextMenu(null);
+          }}
+          onMove={(docId, folderId) => {
+            onMoveDocument(docId, folderId);
+            setContextMenu(null);
+          }}
+          onUpload={(doc) => {
+            onUploadDocument(doc);
+            setContextMenu(null);
+          }}
         />
       )}
       {showTagManager && (

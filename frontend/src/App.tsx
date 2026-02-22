@@ -138,6 +138,13 @@ function AppContent() {
     await libApi.deleteTag(id);
     await refreshLibrary();
   };
+  const handleUpdateFolderTags = async (id: string, tagIds: string[]) => {
+    const updated = await libApi.updateFolderTags(id, tagIds);
+    setLibrary((prev) => ({
+      ...prev,
+      folders: prev.folders.map((f) => (f.id === id ? updated : f)),
+    }));
+  };
   const handlePageChange = useCallback(
     async (page: number) => {
       if (!selectedDoc) return;
@@ -202,6 +209,7 @@ function AppContent() {
           onCreateTag={handleCreateTag}
           onDeleteTag={handleDeleteTag}
           onTagFilterChange={setActiveTags}
+          onUpdateFolderTags={handleUpdateFolderTags}
         />
 
         <main className="relative flex-1 overflow-auto px-6 py-8">

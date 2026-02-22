@@ -7,9 +7,9 @@
 
 - **專案名稱**：PDF 振り仮名標注工具 (asmr_pdf_script_add_Furigana)
 - **技術棧**：Python (FastAPI + PyMuPDF + fugashi/MeCab) / React + TypeScript (Vite)
-- **最後更新**：2026-02-22（Bug Fix Task 1+2+3 完成：翻譯快取修復、後端 Folder tagIds、前端型別 API 更新，前端 78 tests / 後端 83 tests）
+- **最後更新**：2026-02-22（Bug Fix Task 4 完成：Sidebar Tag 篩選改為資料夾層級，前端 78 tests）
 
-## 專案狀態：🔧 Bug Fix 進行中（Tag 資料夾化 + 翻譯快取修復，Task 3/5 完成）
+## 專案狀態：🔧 Bug Fix 進行中（Tag 資料夾化 + 翻譯快取修復，Task 4/5 完成）
 
 > 設計文件：`docs/plans/2026-02-22-bugfix-tag-translation-design.md`
 > 實作計畫：`docs/plans/2026-02-22-bugfix-tag-translation-plan.md`
@@ -21,11 +21,12 @@
 - [x] **Task 1**：翻譯快取修復（`PagedPreview.tsx` 解構加入 `cachedTranslations`，補查持久化快取）
 - [x] **Task 2**：後端 Folder 加入 tagIds（`library_service.py` + `routers/library.py`，新增 `update_folder_tags` API）
 - [x] **Task 3**：前端型別 + API 更新（`libraryApi.ts`：`Folder` 加 `tagIds`，新增 `updateFolderTags`）
-- [ ] **Task 4**：Sidebar Tag 篩選改為資料夾層級（`Sidebar.tsx` `filteredFolders`、`FolderItem` 加 props、`App.tsx` 傳入 `onUpdateFolderTags`）
+- [x] **Task 4**：Sidebar Tag 篩選改為資料夾層級（`Sidebar.tsx` `filteredFolders`、`FolderItem` 加 props、`App.tsx` 傳入 `onUpdateFolderTags`）
 - [ ] **Task 5**：FolderItem 加入 Tag 設定 UI（🏷 按鈕 + checkbox 選單 + 色點顯示）
 
 ## 已完成項目
 
+- [2026-02-22] Bug Fix Task 4 完成：Sidebar Tag 篩選改為資料夾層級（`filteredFolders`、FolderItem 加 `tags`/`onUpdateFolderTags` props、App.tsx 傳入 handler），前端 78 tests
 - [2026-02-22] 修復問題 3：`GET /api/library/documents/{id}/html` 的 `page_count` 計數字串由 `'<section class="page">'` 改為 `'<section class="page"'`，後端共 80 tests passed
 - [2026-02-22] Sidebar 文件庫 Task 8 完成：FolderItem 加入「+ 新增文件」按鈕（onAddDocument prop）、Sidebar 傳遞 onCreateDocument，前端共 75 tests passed
 - [2026-02-22] Sidebar 文件庫 Task 7 完成：App.tsx 重構整合 Sidebar / 文件庫狀態機（idle|loading|uploading|viewing）/ NotesPanel / 持久化，前端共 74 tests passed
