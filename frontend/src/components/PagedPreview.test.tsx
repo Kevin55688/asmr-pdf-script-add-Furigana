@@ -1,7 +1,8 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import { PagedPreview } from "./PagedPreview";
+import * as api from "../services/api";
 
 function makeHtml(pageCount: number): string {
   return Array.from(
@@ -12,6 +13,10 @@ function makeHtml(pageCount: number): string {
 }
 
 describe("PagedPreview", () => {
+  beforeEach(() => {
+    vi.restoreAllMocks();
+  });
+
   it("預設顯示第 1 頁內容", () => {
     render(<PagedPreview html={makeHtml(3)} pageCount={3} />);
     expect(screen.getByText("第 1 頁內容")).toBeInTheDocument();
@@ -80,5 +85,71 @@ describe("PagedPreview", () => {
     await user.type(input, "999");
     await user.keyboard("{Enter}");
     expect(screen.getByDisplayValue("3")).toBeInTheDocument();
+  });
+
+  // ── Toggle 測試 ──────────────────────────────────────────────────────────
+
+  it("預設顯示振り仮名 toggle 並標示「振り仮名」", () => {
+    render(<PagedPreview html={makeHtml(1)} pageCount={1} />);
+    expect(screen.getByLabelText("振り仮名")).toBeInTheDocument();
+  });
+
+  it("預設顯示翻譯 toggle 並標示「翻譯」", () => {
+    render(<PagedPreview html={makeHtml(1)} pageCount={1} />);
+    expect(screen.getByLabelText("翻譯")).toBeInTheDocument();
+  });
+
+  it("開啟翻譯 switch 時呼叫 translateTexts", async () => {
+    const user = userEvent.setup();
+    const mockTranslate = vi
+      .spyOn(api, "translateTexts")
+      .mockResolvedValue(["翻譯結果"]);
+
+    render(<PagedPreview html={makeHtml(1)} pageCount={1} />);
+    await user.click(screen.getByLabelText("翻譯"));
+
+    await waitFor(() => {
+      expect(mockTranslate).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  it("關閉翻譯 switch 時不呼叫 translateTexts", async () => {
+    const mockTranslate = vi.spyOn(api, "translateTexts").mockResolvedValue([]);
+    render(<PagedPreview html={makeHtml(1)} pageCount={1} />);
+    // 不點 switch，直接確認沒有呼叫
+    expect(mockTranslate).not.toHaveBeenCalled();
+  });
+
+  it("同一頁再次開啟翻譯不重複呼叫 API（cache）", async () => {
+    const user = userEvent.setup();
+    const mockTranslate = vi
+      .spyOn(api, "translateTexts")
+      .mockResolvedValue(["翻譯結果"]);
+
+    render(<PagedPreview html={makeHtml(1)} pageCount={1} />);
+    const toggleBtn = screen.getByLabelText("翻譯");
+
+    await user.click(toggleBtn); // 開啟 → 呼叫 API
+    await waitFor(() => expect(mockTranslate).toHaveBeenCalledTimes(1));
+
+    await user.click(toggleBtn); // 關閉
+    await user.click(toggleBtn); // 再開啟 → 應使用 cache，不再呼叫
+
+    expect(mockTranslate).toHaveBeenCalledTimes(1);
+  });
+
+  it("切換語言時重新呼叫翻譯 API", async () => {
+    const user = userEvent.setup();
+    const mockTranslate = vi
+      .spyOn(api, "translateTexts")
+      .mockResolvedValue(["翻譯結果"]);
+
+    render(<PagedPreview html={makeHtml(1)} pageCount={1} />);
+    await user.click(screen.getByLabelText("翻譯")); // 開啟翻譯
+    await waitFor(() => expect(mockTranslate).toHaveBeenCalledTimes(1));
+
+    // 切換語言
+    await user.selectOptions(screen.getByLabelText("目標語言"), "en");
+    await waitFor(() => expect(mockTranslate).toHaveBeenCalledTimes(2));
   });
 });
