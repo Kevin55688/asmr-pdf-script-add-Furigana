@@ -7,7 +7,7 @@
 
 - **專案名稱**：PDF 振り仮名標注工具 (asmr_pdf_script_add_Furigana)
 - **技術棧**：Python (FastAPI + PyMuPDF + fugashi/MeCab) / React + TypeScript (Vite)
-- **最後更新**：2026-02-22（Issue 2 修復：翻譯持久化快取更新，前端 80 tests）
+- **最後更新**：2026-02-22（修復 FolderItem group-hover：🏷 按鈕現在可正常顯示）
 
 ## 專案狀態：✅ Issue 2 修復完成（翻譯快取持久化）
 
@@ -26,6 +26,7 @@
 
 ## 已完成項目
 
+- [2026-02-22] 修復 FolderItem group-hover：父層 div 補上 `group` class，🏷 Tag 設定按鈕現可正常在 hover 時顯示
 - [2026-02-22] Issue 2 修復：`handleTranslationSaved` 在 `App.tsx` 儲存翻譯後同步更新 `selectedDoc` 與 `library.documents`，確保 `PagedPreview` remount 時 `cachedTranslations` 有效，前端 80 tests
 - [2026-02-22] Bug Fix Task 5 完成：FolderItem 加入 Tag 設定 UI（🏷 按鈕 + checkbox 選單 + 色點顯示），前端 79 tests
 - [2026-02-22] Bug Fix Task 4 完成：Sidebar Tag 篩選改為資料夾層級（`filteredFolders`、FolderItem 加 `tags`/`onUpdateFolderTags` props、App.tsx 傳入 handler），前端 78 tests

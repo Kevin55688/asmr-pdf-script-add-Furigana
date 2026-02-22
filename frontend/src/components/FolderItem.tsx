@@ -43,7 +43,7 @@ export function FolderItem({
     <div className="relative">
       <div
         className={[
-          "flex cursor-pointer items-center gap-2 rounded px-2 py-1.5 text-sm font-medium transition-colors",
+          "group flex cursor-pointer items-center gap-2 rounded px-2 py-1.5 text-sm font-medium transition-colors",
           isDragOver
             ? "bg-vermilion/10 ring-1 ring-vermilion"
             : "hover:bg-washi-border/40",
