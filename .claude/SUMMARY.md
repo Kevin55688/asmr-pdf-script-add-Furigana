@@ -7,9 +7,9 @@
 
 - **專案名稱**：PDF 振り仮名標注工具 (asmr_pdf_script_add_Furigana)
 - **技術棧**：Python (FastAPI + PyMuPDF + fugashi/MeCab) / React + TypeScript (Vite)
-- **最後更新**：2026-02-22（Sidebar 文件庫 Task 5 完成，前端共 71 tests passed）
+- **最後更新**：2026-02-22（Sidebar 文件庫 Task 7 完成，前端共 74 tests passed）
 
-## 專案狀態：🚧 Sidebar 文件庫功能開發中（Task 4+5+6/8 完成）
+## 專案狀態：🚧 Sidebar 文件庫功能開發中（Task 4+5+6+7/8 完成）
 
 > 設計文件：`docs/plans/2026-02-22-sidebar-library-design.md`
 > 實作計畫：`docs/plans/2026-02-22-sidebar-library-plan.md`
@@ -24,11 +24,12 @@
 - [x] **Task 4**：前端 Sidebar / FolderItem / DocumentItem 元件（6 個測試）
 - [x] **Task 5**：前端 DocumentContextMenu + TagManager 元件（7 個測試）
 - [x] **Task 6**：前端 NotesPanel + PagedPreview 持久化 props（3+2 新增測試）
-- [ ] **Task 7**：前端 App.tsx 重構整合（狀態機升級 + 全面整合）
+- [x] **Task 7**：前端 App.tsx 重構整合（狀態機升級 + 全面整合，3 新增測試）
 - [ ] **Task 8**：資料夾內新增文件按鈕（FolderItem / Sidebar 小修）
 
 ## 已完成項目
 
+- [2026-02-22] Sidebar 文件庫 Task 7 完成：App.tsx 重構整合 Sidebar / 文件庫狀態機（idle|loading|uploading|viewing）/ NotesPanel / 持久化，前端共 74 tests passed
 - [2026-02-22] Sidebar 文件庫 Task 5 完成：新增 DocumentContextMenu（右鍵選單）+ TagManager（Tag 管理）元件，Sidebar 整合右鍵選單與 Tag 管理按鈕，前端共 71 tests passed
 - [2026-02-22] Sidebar 文件庫 Task 4 + Task 6 完成（並行）：Sidebar/FolderItem/DocumentItem（6 tests）、NotesPanel（3 tests）、PagedPreview 持久化 props（2 tests），前端共 64 tests passed
 - [2026-02-22] Sidebar 文件庫 Task 3 完成：新增 `libraryApi.ts`（型別定義 + 11 個 API 函式，13 tests passed，前端共 53 tests passed）
