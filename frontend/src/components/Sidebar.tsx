@@ -28,6 +28,7 @@ export function Sidebar({
   activeTags,
   onSelectDocument,
   onCreateFolder,
+  onCreateDocument,
   onRenameDocument,
   onDeleteDocument,
   onMoveDocument,
@@ -125,6 +126,7 @@ export function Sidebar({
                   if (dragDocId) onMoveDocument(dragDocId, folderId);
                   setDragDocId(null);
                 }}
+                onAddDocument={(folderId, name) => onCreateDocument(name, folderId)}
               />
             ))}
           </div>

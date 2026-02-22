@@ -10,6 +10,7 @@ interface Props {
   onDocumentContextMenu: (e: React.MouseEvent, doc: Document) => void;
   onDocumentDragStart: (e: React.DragEvent, doc: Document) => void;
   onDrop: (e: React.DragEvent, folderId: string) => void;
+  onAddDocument: (folderId: string, name: string) => void;
 }
 
 export function FolderItem({
@@ -20,6 +21,7 @@ export function FolderItem({
   onDocumentContextMenu,
   onDocumentDragStart,
   onDrop,
+  onAddDocument,
 }: Props) {
   const [expanded, setExpanded] = useState(true);
   const [isDragOver, setIsDragOver] = useState(false);
@@ -53,6 +55,15 @@ export function FolderItem({
               onDragStart={onDocumentDragStart}
             />
           ))}
+          <button
+            onClick={() => {
+              const name = window.prompt("文件名稱");
+              if (name?.trim()) onAddDocument(folder.id, name.trim());
+            }}
+            className="mt-1 w-full rounded px-3 py-1 text-left text-xs text-ink-light transition-colors hover:text-vermilion"
+          >
+            + 新增文件
+          </button>
         </div>
       )}
     </div>

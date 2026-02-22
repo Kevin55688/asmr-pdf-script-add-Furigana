@@ -1,3 +1,24 @@
+## [2026-02-22 19:14] @Claude
+
+### 處理項目
+
+- Sidebar 文件庫 Task 8：FolderItem 加入「+ 新增文件」按鈕
+
+### 實作方式
+
+- TDD 流程：先在 Sidebar.test.tsx 新增失敗測試，確認 RED 後實作
+- `FolderItem.tsx`：新增 `onAddDocument: (folderId, name) => void` prop，在展開清單後加入「+ 新增文件」按鈕，點擊後呼叫 `window.prompt` 取得文件名稱
+- `Sidebar.tsx`：補上 `onCreateDocument` 解構，並在 FolderItem 傳入 `onAddDocument={(folderId, name) => onCreateDocument(name, folderId)}`
+
+### 變更檔案
+
+- `frontend/src/components/FolderItem.tsx` - 新增 onAddDocument prop 與按鈕
+- `frontend/src/components/Sidebar.tsx` - 解構 onCreateDocument，傳遞 onAddDocument
+- `frontend/src/components/Sidebar.test.tsx` - 新增「+ 新增文件按鈕觸發 onCreateDocument」測試
+- `.claude/SUMMARY.md` - Task 8 完成，狀態更新為全部完成
+
+---
+
 ## [2026-02-22 13:40] @Claude
 
 ### 處理項目

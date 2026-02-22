@@ -55,7 +55,7 @@ describe("Sidebar", () => {
         onCreateTag={noop}
         onDeleteTag={noop}
         onTagFilterChange={noop}
-      />
+      />,
     );
     expect(screen.getByText("ASMR")).toBeInTheDocument();
   });
@@ -78,7 +78,7 @@ describe("Sidebar", () => {
         onCreateTag={noop}
         onDeleteTag={noop}
         onTagFilterChange={noop}
-      />
+      />,
     );
     expect(screen.getByText("腳本 Vol.1")).toBeInTheDocument();
     expect(screen.getByText("草稿")).toBeInTheDocument();
@@ -102,9 +102,11 @@ describe("Sidebar", () => {
         onCreateTag={noop}
         onDeleteTag={noop}
         onTagFilterChange={noop}
-      />
+      />,
     );
-    const toggleBtn = screen.getByRole("button", { name: /收合側邊欄|展開側邊欄/ });
+    const toggleBtn = screen.getByRole("button", {
+      name: /收合側邊欄|展開側邊欄/,
+    });
     fireEvent.click(toggleBtn);
     expect(screen.queryByText("ASMR")).not.toBeInTheDocument();
     fireEvent.click(toggleBtn);
@@ -130,7 +132,7 @@ describe("Sidebar", () => {
         onCreateTag={noop}
         onDeleteTag={noop}
         onTagFilterChange={noop}
-      />
+      />,
     );
     fireEvent.click(screen.getByText("腳本 Vol.1"));
     expect(onSelect).toHaveBeenCalledWith(mockLibrary.documents[0]);
@@ -154,10 +156,37 @@ describe("Sidebar", () => {
         onCreateTag={noop}
         onDeleteTag={noop}
         onTagFilterChange={noop}
-      />
+      />,
     );
     const draft = screen.getByText("草稿").closest("[data-uploaded]");
     expect(draft?.getAttribute("data-uploaded")).toBe("false");
+  });
+
+  it("+ 新增文件按鈕觸發 onCreateDocument", () => {
+    const onCreateDocument = vi.fn();
+    vi.stubGlobal("prompt", vi.fn().mockReturnValue("新腳本"));
+    render(
+      <Sidebar
+        library={mockLibrary}
+        selectedDocId={null}
+        activeTags={[]}
+        onSelectDocument={noop}
+        onCreateFolder={noop}
+        onRenameFolder={noop}
+        onDeleteFolder={noop}
+        onCreateDocument={onCreateDocument}
+        onRenameDocument={noop}
+        onDeleteDocument={noop}
+        onMoveDocument={noop}
+        onUploadDocument={noop}
+        onCreateTag={noop}
+        onDeleteTag={noop}
+        onTagFilterChange={noop}
+      />,
+    );
+    fireEvent.click(screen.getByText("+ 新增文件"));
+    expect(onCreateDocument).toHaveBeenCalledWith("新腳本", "f-001");
+    vi.restoreAllMocks();
   });
 
   it("tag 篩選隱藏不符合的文件", () => {
@@ -185,7 +214,7 @@ describe("Sidebar", () => {
         onCreateTag={noop}
         onDeleteTag={noop}
         onTagFilterChange={noop}
-      />
+      />,
     );
     expect(screen.getByText("腳本 Vol.1")).toBeInTheDocument();
     expect(screen.queryByText("草稿")).not.toBeInTheDocument();
