@@ -78,7 +78,7 @@ export function PagedPreview({ html, pageCount }: PagedPreviewProps) {
       setTranslationCache((prev) => ({ ...prev, [cacheKey]: result }));
     } catch (e) {
       const msg = e instanceof Error ? e.message : "翻譯失敗";
-      showToast(msg, { action: { label: "重試", onClick: performTranslation } });
+      showToast(msg, { action: { label: "重試", onClick: () => performTranslationRef.current() } });
     } finally {
       setIsTranslating(false);
     }
