@@ -51,7 +51,7 @@ export function Sidebar({
   const filteredFolders = () => {
     if (activeTags.length === 0) return library.folders;
     return library.folders.filter((f) =>
-      activeTags.every((tid) => f.tagIds.includes(tid)),
+      activeTags.every((tid) => (f.tagIds ?? []).includes(tid)),
     );
   };
 
