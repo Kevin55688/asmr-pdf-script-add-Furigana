@@ -7,13 +7,25 @@
 
 - **專案名稱**：PDF 振り仮名標注工具 (asmr_pdf_script_add_Furigana)
 - **技術棧**：Python (FastAPI + PyMuPDF + fugashi/MeCab) / React + TypeScript (Vite)
-- **最後更新**：2026-02-22（Claude 翻譯改用 Haiku 4.5）
+- **最後更新**：2026-02-22（Sidebar 文件庫功能 brainstorming + 設計文件 + 實作計畫完成）
 
-## 專案狀態：✅ API 錯誤 Toast 通知完成
+## 專案狀態：🚧 Sidebar 文件庫功能開發中
+
+> 設計文件：`docs/plans/2026-02-22-sidebar-library-design.md`
+> 實作計畫：`docs/plans/2026-02-22-sidebar-library-plan.md`
 
 ## 待完成項目
 
-（無）
+### Sidebar 文件庫功能（8 Tasks）
+
+- [ ] **Task 1**：後端 Library Service（`library_service.py`，18 個測試）
+- [ ] **Task 2**：後端 Library Router（11 個 endpoints，`routers/library.py`，14 個測試）
+- [ ] **Task 3**：前端 Library API Service（`libraryApi.ts`，13 個測試）
+- [ ] **Task 4**：前端 Sidebar / FolderItem / DocumentItem 元件（5 個測試）
+- [ ] **Task 5**：前端 DocumentContextMenu + TagManager 元件（7 個測試）
+- [ ] **Task 6**：前端 NotesPanel + PagedPreview 持久化 props（新增測試）
+- [ ] **Task 7**：前端 App.tsx 重構整合（狀態機升級 + 全面整合）
+- [ ] **Task 8**：資料夾內新增文件按鈕（FolderItem / Sidebar 小修）
 
 ## 已完成項目
 
@@ -64,8 +76,10 @@ asmr_pdf_script_add_Furigana/
 │   │   └── services/     # API 呼叫
 │   └── package.json
 ├── docs/plans/           # 進行中的設計與實作文件
-│   ├── 2026-02-21-ui-redesign-design.md # 現行設計文件（和風現代主題）
-│   └── 2026-02-21-ui-redesign-plan.md   # 現行實作計畫（6 Tasks）
+│   ├── 2026-02-21-ui-redesign-design.md        # UI 重設計文件
+│   ├── 2026-02-21-ui-redesign-plan.md          # UI 重設計計畫（已完成）
+│   ├── 2026-02-22-sidebar-library-design.md    # Sidebar 文件庫設計文件
+│   └── 2026-02-22-sidebar-library-plan.md      # Sidebar 文件庫實作計畫（8 Tasks）
 └── .claude/
 ```
 
@@ -88,3 +102,4 @@ asmr_pdf_script_add_Furigana/
 - @Claude — 2026-02-21 — 後端 + 前端全部實作（Task 1–12，端對端驗證通過）
 - @Claude — 2026-02-21 — 前端分頁功能腦力激盪、設計文件、實作計畫
 - @Claude — 2026-02-21 — UI 重設計腦力激盪、設計文件、實作計畫（和風現代主題）
+- @Claude — 2026-02-22 — Sidebar 文件庫功能 brainstorming、設計文件、8-Task TDD 實作計畫
