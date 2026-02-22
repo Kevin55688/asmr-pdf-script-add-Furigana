@@ -128,3 +128,26 @@ def test_update_translations_merges_providers():
     trans = lib["documents"][0]["translations"]
     assert trans["deepl"]["zh-TW"] == {"p-0": "A"}
     assert trans["claude"]["zh-TW"] == {"p-0": "B"}
+
+
+def test_create_folder_has_tag_ids():
+    folder = lib_svc.create_folder("測試資料夾")
+    assert "tagIds" in folder
+    assert folder["tagIds"] == []
+
+
+def test_update_folder_tags():
+    folder = lib_svc.create_folder("資料夾A")
+    updated = lib_svc.update_folder_tags(folder["id"], ["t-001", "t-002"])
+    assert updated["tagIds"] == ["t-001", "t-002"]
+
+
+def test_delete_tag_removes_from_folders():
+    tag = lib_svc.create_tag("待刪除", "#ff0000")
+    folder = lib_svc.create_folder("資料夾B")
+    lib_svc.update_folder_tags(folder["id"], [tag["id"]])
+    lib_svc.delete_tag(tag["id"])
+    lib = lib_svc.load_library()
+    for f in lib["folders"]:
+        if f["id"] == folder["id"]:
+            assert tag["id"] not in f.get("tagIds", [])

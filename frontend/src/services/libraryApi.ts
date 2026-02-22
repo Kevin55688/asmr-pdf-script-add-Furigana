@@ -4,6 +4,7 @@ export interface Folder {
   id: string;
   name: string;
   order: number;
+  tagIds: string[];
 }
 
 export interface Tag {
@@ -53,6 +54,11 @@ export const renameFolder = (id: string, name: string): Promise<Folder> =>
   });
 export const deleteFolder = (id: string): Promise<void> =>
   request(`/folders/${id}`, { method: "DELETE" });
+export const updateFolderTags = (id: string, tagIds: string[]): Promise<Folder> =>
+  request(`/folders/${id}/tags`, {
+    method: "PATCH",
+    body: JSON.stringify({ tagIds }),
+  });
 export const createTag = (name: string, color: string): Promise<Tag> =>
   request("/tags", { method: "POST", body: JSON.stringify({ name, color }) });
 export const deleteTag = (id: string): Promise<void> =>

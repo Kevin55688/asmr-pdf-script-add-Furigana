@@ -7,25 +7,22 @@
 
 - **專案名稱**：PDF 振り仮名標注工具 (asmr_pdf_script_add_Furigana)
 - **技術棧**：Python (FastAPI + PyMuPDF + fugashi/MeCab) / React + TypeScript (Vite)
-- **最後更新**：2026-02-22（修復問題 3：多頁文件頁數重啟後變 1/1，後端共 80 tests passed）
+- **最後更新**：2026-02-22（Bug Fix Task 1+2+3 完成：翻譯快取修復、後端 Folder tagIds、前端型別 API 更新，前端 78 tests / 後端 83 tests）
 
-## 專案狀態：✅ Sidebar 文件庫功能全部完成（Task 1-8/8 完成）
+## 專案狀態：🔧 Bug Fix 進行中（Tag 資料夾化 + 翻譯快取修復，Task 3/5 完成）
 
-> 設計文件：`docs/plans/2026-02-22-sidebar-library-design.md`
-> 實作計畫：`docs/plans/2026-02-22-sidebar-library-plan.md`
+> 設計文件：`docs/plans/2026-02-22-bugfix-tag-translation-design.md`
+> 實作計畫：`docs/plans/2026-02-22-bugfix-tag-translation-plan.md`
 
 ## 待完成項目
 
-### Sidebar 文件庫功能（8 Tasks）
+### Bug Fix：Tag 資料夾化 + 翻譯快取修復（5 Tasks）
 
-- [x] **Task 1**：後端 Library Service（`library_service.py`，16 個測試）
-- [x] **Task 2**：後端 Library Router（11 個 endpoints，`routers/library.py`，13 個測試）
-- [x] **Task 3**：前端 Library API Service（`libraryApi.ts`，13 個測試）
-- [x] **Task 4**：前端 Sidebar / FolderItem / DocumentItem 元件（6 個測試）
-- [x] **Task 5**：前端 DocumentContextMenu + TagManager 元件（7 個測試）
-- [x] **Task 6**：前端 NotesPanel + PagedPreview 持久化 props（3+2 新增測試）
-- [x] **Task 7**：前端 App.tsx 重構整合（狀態機升級 + 全面整合，3 新增測試）
-- [x] **Task 8**：資料夾內新增文件按鈕（FolderItem / Sidebar 小修）
+- [x] **Task 1**：翻譯快取修復（`PagedPreview.tsx` 解構加入 `cachedTranslations`，補查持久化快取）
+- [x] **Task 2**：後端 Folder 加入 tagIds（`library_service.py` + `routers/library.py`，新增 `update_folder_tags` API）
+- [x] **Task 3**：前端型別 + API 更新（`libraryApi.ts`：`Folder` 加 `tagIds`，新增 `updateFolderTags`）
+- [ ] **Task 4**：Sidebar Tag 篩選改為資料夾層級（`Sidebar.tsx` `filteredFolders`、`FolderItem` 加 props、`App.tsx` 傳入 `onUpdateFolderTags`）
+- [ ] **Task 5**：FolderItem 加入 Tag 設定 UI（🏷 按鈕 + checkbox 選單 + 色點顯示）
 
 ## 已完成項目
 
@@ -75,7 +72,6 @@
 |---|--------|------|----------|------|
 | 1 | 中 | 左側選單的資料夾無法設定所屬 Tag，導致無法透過 Tag 篩選整個資料夾 | 2026-02-22 | 🔴 待修復 |
 | 2 | 中 | 已翻譯過的文本，重新勾選翻譯並選擇供應商後按下翻譯鈕，不會顯示快取內容而是重新呼叫翻譯 API | 2026-02-22 | 🔴 待修復 |
-| 4 | 中 | 文件缺少編輯名稱與刪除功能（目前右鍵選單未實作對應操作） | 2026-02-22 | ✅ 已確認為誤報（Task 5/7 完成時已實作） |
 
 ## 專案結構
 

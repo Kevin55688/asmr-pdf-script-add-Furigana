@@ -205,6 +205,37 @@ describe("PagedPreview", () => {
   });
 });
 
+describe("PagedPreview cachedTranslations", () => {
+  beforeEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it("cachedTranslations 有資料時點翻譯不呼叫 API", async () => {
+    const user = userEvent.setup();
+    const mockTranslate = vi.spyOn(api, "translateTexts").mockResolvedValue(["翻訳API呼ばれた"]);
+
+    const singlePageHtml = `<section class="page"><p>テスト</p></section>`;
+    const cachedTranslations = {
+      deepl: { "zh-TW": { "p-0": "測試（快取）" } },
+    };
+
+    render(
+      <PagedPreview
+        html={singlePageHtml}
+        pageCount={1}
+        cachedTranslations={cachedTranslations}
+        onTranslationSaved={vi.fn()}
+      />
+    );
+
+    await user.click(screen.getByLabelText("翻譯"));
+    await user.click(screen.getByRole("button", { name: "翻譯" }));
+
+    await waitFor(() => expect(mockTranslate).not.toHaveBeenCalled());
+    expect(await screen.findByText("測試（快取）")).toBeInTheDocument();
+  });
+});
+
 describe("PagedPreview persistence props", () => {
   it("starts at initialPage when provided", () => {
     const html = Array.from({ length: 5 }, (_, i) =>

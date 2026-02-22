@@ -34,6 +34,7 @@ def create_folder(name: str) -> dict:
         "id": f"f-{uuid.uuid4().hex[:8]}",
         "name": name,
         "order": len(library["folders"]),
+        "tagIds": [],
     }
     library["folders"].append(folder)
     save_library(library)
@@ -76,10 +77,22 @@ def delete_tag(tag_id: str) -> bool:
     if not any(t["id"] == tag_id for t in library["tags"]):
         return False
     library["tags"] = [t for t in library["tags"] if t["id"] != tag_id]
+    for folder in library["folders"]:
+        folder["tagIds"] = [tid for tid in folder.get("tagIds", []) if tid != tag_id]
     for doc in library["documents"]:
         doc["tagIds"] = [tid for tid in doc.get("tagIds", []) if tid != tag_id]
     save_library(library)
     return True
+
+
+def update_folder_tags(folder_id: str, tag_ids: list) -> Optional[dict]:
+    library = load_library()
+    for folder in library["folders"]:
+        if folder["id"] == folder_id:
+            folder["tagIds"] = tag_ids
+            save_library(library)
+            return folder
+    return None
 
 
 def create_document(name: str, folder_id: str) -> dict:

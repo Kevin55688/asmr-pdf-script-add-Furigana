@@ -33,6 +33,7 @@ export function PagedPreview({
   pageCount,
   initialPage = 1,
   onPageChange,
+  cachedTranslations,
   onTranslationSaved,
 }: PagedPreviewProps) {
   const { showToast } = useToast();
@@ -78,6 +79,16 @@ export function PagedPreview({
     if (currentPageTexts.length === 0) return;
     if (translationCache[cacheKey]) return; // cache hit
 
+    // 檢查持久化快取
+    const persistedLang = cachedTranslations?.[provider]?.[targetLang];
+    if (persistedLang) {
+      const cached = currentPageTexts.map((_, i) => persistedLang[`p-${i}`] ?? "");
+      if (cached.some((t) => t)) {
+        setTranslationCache((prev) => ({ ...prev, [cacheKey]: cached }));
+        return;
+      }
+    }
+
     setIsTranslating(true);
     try {
       const result = await translateTexts(
@@ -98,7 +109,7 @@ export function PagedPreview({
     } finally {
       setIsTranslating(false);
     }
-  }, [currentPageTexts, cacheKey, provider, targetLang, translationCache]);
+  }, [currentPageTexts, cacheKey, provider, targetLang, translationCache, cachedTranslations]);
 
   // Ref：保持最新版 performTranslation，供 effect 使用（避免 stale closure）
   const performTranslationRef = useRef(performTranslation);

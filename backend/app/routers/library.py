@@ -22,6 +22,10 @@ class FolderUpdate(BaseModel):
     name: str
 
 
+class FolderTagsUpdate(BaseModel):
+    tagIds: List[str]
+
+
 class TagCreate(BaseModel):
     name: str
     color: str
@@ -71,6 +75,14 @@ def delete_folder(folder_id: str):
     if not lib_svc.delete_folder(folder_id):
         raise HTTPException(status_code=404, detail="Folder not found")
     return {"ok": True}
+
+
+@router.patch("/folders/{folder_id}/tags")
+def update_folder_tags(folder_id: str, body: FolderTagsUpdate):
+    result = lib_svc.update_folder_tags(folder_id, body.tagIds)
+    if result is None:
+        raise HTTPException(status_code=404, detail="Folder not found")
+    return result
 
 
 @router.post("/tags")

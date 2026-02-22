@@ -4,6 +4,7 @@ import {
   createFolder,
   renameFolder,
   deleteFolder,
+  updateFolderTags,
   createTag,
   deleteTag,
   createDocument,
@@ -13,6 +14,7 @@ import {
   getDocumentHtml,
   saveTranslations,
 } from "./libraryApi";
+import type { Folder } from "./libraryApi";
 
 const mockFetch = vi.fn();
 vi.stubGlobal("fetch", mockFetch);
@@ -136,6 +138,28 @@ describe("saveTranslations", () => {
       "p-0": "你好",
     });
     expect(result.translations.deepl["zh-TW"]["p-0"]).toBe("你好");
+  });
+});
+
+describe("Folder 型別 + updateFolderTags", () => {
+  it("Folder 型別包含 tagIds 欄位", () => {
+    const folder: Folder = {
+      id: "f-001",
+      name: "測試",
+      order: 0,
+      tagIds: ["t-001"],
+    };
+    expect(folder.tagIds).toEqual(["t-001"]);
+  });
+
+  it("updateFolderTags 傳送正確請求", async () => {
+    mockResponse({ id: "f-001", name: "A", order: 0, tagIds: ["t-001"] });
+    const result = await updateFolderTags("f-001", ["t-001"]);
+    expect(result.tagIds).toEqual(["t-001"]);
+    expect(mockFetch).toHaveBeenCalledWith(
+      expect.stringContaining("/folders/f-001/tags"),
+      expect.objectContaining({ method: "PATCH" })
+    );
   });
 });
 
