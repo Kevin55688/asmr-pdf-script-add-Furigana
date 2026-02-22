@@ -187,6 +187,36 @@ describe("Sidebar", () => {
     vi.restoreAllMocks();
   });
 
+  it("點擊資料夾 Tag 按鈕後可選取 Tag", () => {
+    const onUpdateFolderTags = vi.fn();
+    render(
+      <Sidebar
+        library={{
+          ...mockLibrary,
+          folders: [{ id: "f-001", name: "ASMR", order: 0, tagIds: [] }],
+        }}
+        selectedDocId={null}
+        activeTags={[]}
+        onSelectDocument={noop}
+        onCreateFolder={noop}
+        onRenameFolder={noop}
+        onDeleteFolder={noop}
+        onCreateDocument={noop}
+        onRenameDocument={noop}
+        onDeleteDocument={noop}
+        onMoveDocument={noop}
+        onUploadDocument={noop}
+        onCreateTag={noop}
+        onDeleteTag={noop}
+        onTagFilterChange={noop}
+        onUpdateFolderTags={onUpdateFolderTags}
+      />,
+    );
+    fireEvent.click(screen.getByLabelText("設定資料夾 Tag"));
+    fireEvent.click(screen.getByLabelText("Tag: 完成"));
+    expect(onUpdateFolderTags).toHaveBeenCalledWith("f-001", ["t-001"]);
+  });
+
   it("tag 篩選隱藏不符合的資料夾", () => {
     const libraryWithTag: Library = {
       ...mockLibrary,

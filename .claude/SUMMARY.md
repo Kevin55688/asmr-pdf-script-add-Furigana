@@ -7,9 +7,9 @@
 
 - **專案名稱**：PDF 振り仮名標注工具 (asmr_pdf_script_add_Furigana)
 - **技術棧**：Python (FastAPI + PyMuPDF + fugashi/MeCab) / React + TypeScript (Vite)
-- **最後更新**：2026-02-22（Bug Fix Task 4 完成：Sidebar Tag 篩選改為資料夾層級，前端 78 tests）
+- **最後更新**：2026-02-22（Bug Fix Task 5 完成：FolderItem Tag 設定 UI，前端 79 tests）
 
-## 專案狀態：🔧 Bug Fix 進行中（Tag 資料夾化 + 翻譯快取修復，Task 4/5 完成）
+## 專案狀態：✅ Bug Fix 完成（Tag 資料夾化 + 翻譯快取修復，Task 5/5 完成）
 
 > 設計文件：`docs/plans/2026-02-22-bugfix-tag-translation-design.md`
 > 實作計畫：`docs/plans/2026-02-22-bugfix-tag-translation-plan.md`
@@ -22,10 +22,11 @@
 - [x] **Task 2**：後端 Folder 加入 tagIds（`library_service.py` + `routers/library.py`，新增 `update_folder_tags` API）
 - [x] **Task 3**：前端型別 + API 更新（`libraryApi.ts`：`Folder` 加 `tagIds`，新增 `updateFolderTags`）
 - [x] **Task 4**：Sidebar Tag 篩選改為資料夾層級（`Sidebar.tsx` `filteredFolders`、`FolderItem` 加 props、`App.tsx` 傳入 `onUpdateFolderTags`）
-- [ ] **Task 5**：FolderItem 加入 Tag 設定 UI（🏷 按鈕 + checkbox 選單 + 色點顯示）
+- [x] **Task 5**：FolderItem 加入 Tag 設定 UI（🏷 按鈕 + checkbox 選單 + 色點顯示）
 
 ## 已完成項目
 
+- [2026-02-22] Bug Fix Task 5 完成：FolderItem 加入 Tag 設定 UI（🏷 按鈕 + checkbox 選單 + 色點顯示），前端 79 tests
 - [2026-02-22] Bug Fix Task 4 完成：Sidebar Tag 篩選改為資料夾層級（`filteredFolders`、FolderItem 加 `tags`/`onUpdateFolderTags` props、App.tsx 傳入 handler），前端 78 tests
 - [2026-02-22] 修復問題 3：`GET /api/library/documents/{id}/html` 的 `page_count` 計數字串由 `'<section class="page">'` 改為 `'<section class="page"'`，後端共 80 tests passed
 - [2026-02-22] Sidebar 文件庫 Task 8 完成：FolderItem 加入「+ 新增文件」按鈕（onAddDocument prop）、Sidebar 傳遞 onCreateDocument，前端共 75 tests passed
@@ -71,7 +72,7 @@
 
 | # | 嚴重度 | 描述 | 發現日期 | 狀態 |
 |---|--------|------|----------|------|
-| 1 | 中 | 左側選單的資料夾無法設定所屬 Tag，導致無法透過 Tag 篩選整個資料夾 | 2026-02-22 | 🔴 待修復 |
+| 1 | 中 | 左側選單的資料夾無法設定所屬 Tag，導致無法透過 Tag 篩選整個資料夾 | 2026-02-22 | ✅ 已修復（Task 2-5）|
 | 2 | 中 | 已翻譯過的文本，重新勾選翻譯並選擇供應商後按下翻譯鈕，不會顯示快取內容而是重新呼叫翻譯 API | 2026-02-22 | 🔴 待修復 |
 
 ## 專案結構

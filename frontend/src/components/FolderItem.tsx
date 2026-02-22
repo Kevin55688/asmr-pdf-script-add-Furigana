@@ -29,9 +29,18 @@ export function FolderItem({
 }: Props) {
   const [expanded, setExpanded] = useState(true);
   const [isDragOver, setIsDragOver] = useState(false);
+  const [showTagPicker, setShowTagPicker] = useState(false);
+
+  const toggleFolderTag = (tagId: string) => {
+    const current = folder.tagIds ?? [];
+    const next = current.includes(tagId)
+      ? current.filter((id) => id !== tagId)
+      : [...current, tagId];
+    onUpdateFolderTags(folder.id, next);
+  };
 
   return (
-    <div>
+    <div className="relative">
       <div
         className={[
           "flex cursor-pointer items-center gap-2 rounded px-2 py-1.5 text-sm font-medium transition-colors",
@@ -52,10 +61,68 @@ export function FolderItem({
       >
         <span className="text-xs text-ink-light">{expanded ? "▼" : "▶"}</span>
         <span className="truncate text-ink">{folder.name}</span>
-        <span className="ml-auto text-xs text-ink-light">
-          {documents.length}
-        </span>
+
+        {/* Tag 色點 */}
+        {(folder.tagIds ?? []).length > 0 && (
+          <span className="flex gap-0.5">
+            {(folder.tagIds ?? []).map((tid) => {
+              const tag = tags.find((t) => t.id === tid);
+              return tag ? (
+                <span
+                  key={tid}
+                  className="h-2 w-2 rounded-full"
+                  style={{ backgroundColor: tag.color }}
+                />
+              ) : null;
+            })}
+          </span>
+        )}
+
+        {/* Tag 設定按鈕 */}
+        <button
+          aria-label="設定資料夾 Tag"
+          onClick={(e) => {
+            e.stopPropagation();
+            setShowTagPicker((v) => !v);
+          }}
+          className="ml-auto rounded p-0.5 text-xs text-ink-light opacity-0 transition-opacity group-hover:opacity-100 hover:text-vermilion"
+        >
+          🏷
+        </button>
+
+        <span className="text-xs text-ink-light">{documents.length}</span>
       </div>
+
+      {/* Tag Picker 下拉 */}
+      {showTagPicker && tags.length > 0 && (
+        <div
+          className="absolute right-0 top-8 z-20 min-w-[120px] rounded border border-washi-border bg-paper shadow-md"
+          onMouseLeave={() => setShowTagPicker(false)}
+        >
+          {tags.map((tag) => {
+            const checked = (folder.tagIds ?? []).includes(tag.id);
+            return (
+              <label
+                key={tag.id}
+                aria-label={`Tag: ${tag.name}`}
+                className="flex cursor-pointer items-center gap-2 px-3 py-1.5 text-xs text-ink hover:bg-washi-border/30"
+              >
+                <input
+                  type="checkbox"
+                  checked={checked}
+                  onChange={() => toggleFolderTag(tag.id)}
+                  className="accent-vermilion"
+                />
+                <span
+                  className="h-2 w-2 rounded-full"
+                  style={{ backgroundColor: tag.color }}
+                />
+                {tag.name}
+              </label>
+            );
+          })}
+        </div>
+      )}
 
       {expanded && (
         <div className="ml-4">
