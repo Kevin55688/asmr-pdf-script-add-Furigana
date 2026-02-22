@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, fireEvent } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { ToastProvider } from "./Toast";
@@ -202,5 +202,27 @@ describe("PagedPreview", () => {
 
     await user.click(screen.getByText("重試"));
     expect(mockTranslate).toHaveBeenCalledTimes(2);
+  });
+});
+
+describe("PagedPreview persistence props", () => {
+  it("starts at initialPage when provided", () => {
+    const html = Array.from({ length: 5 }, (_, i) =>
+      `<section class="page"><p>Page ${i + 1}</p></section>`
+    ).join("");
+    render(<PagedPreview html={html} pageCount={5} initialPage={3} />);
+    expect(screen.getByDisplayValue("3")).toBeInTheDocument();
+  });
+
+  it("calls onPageChange when page changes", async () => {
+    const onPageChange = vi.fn();
+    const html = Array.from({ length: 3 }, (_, i) =>
+      `<section class="page"><p>Page ${i + 1}</p></section>`
+    ).join("");
+    render(<PagedPreview html={html} pageCount={3} onPageChange={onPageChange} />);
+    fireEvent.click(screen.getByRole("button", { name: "下一頁" }));
+    // debounce: wait 1.1s
+    await new Promise((r) => setTimeout(r, 1100));
+    expect(onPageChange).toHaveBeenCalledWith(2);
   });
 });

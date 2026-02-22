@@ -6,6 +6,10 @@ import { useToast } from "./Toast";
 interface PagedPreviewProps {
   html: string;
   pageCount: number;
+  initialPage?: number;
+  onPageChange?: (page: number) => void;
+  cachedTranslations?: Record<string, Record<string, Record<string, string>>>;
+  onTranslationSaved?: (provider: string, lang: string, translations: Record<string, string>) => void;
 }
 
 const PROVIDERS = [
@@ -24,11 +28,17 @@ const LANGUAGES = [
 type Provider = (typeof PROVIDERS)[number]["value"];
 type Language = (typeof LANGUAGES)[number]["value"];
 
-export function PagedPreview({ html, pageCount }: PagedPreviewProps) {
+export function PagedPreview({
+  html,
+  pageCount,
+  initialPage = 1,
+  onPageChange,
+  onTranslationSaved,
+}: PagedPreviewProps) {
   const { showToast } = useToast();
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const [inputValue, setInputValue] = useState("1");
+  const [currentPage, setCurrentPage] = useState(initialPage);
+  const [inputValue, setInputValue] = useState(String(initialPage));
 
   // Toggle 狀態
   const [showRuby, setShowRuby] = useState(true);
@@ -75,7 +85,13 @@ export function PagedPreview({ html, pageCount }: PagedPreviewProps) {
         provider,
         targetLang,
       );
-      setTranslationCache((prev) => ({ ...prev, [cacheKey]: result }));
+      setTranslationCache((prev) => {
+        const next = { ...prev, [cacheKey]: result };
+        const perParagraph: Record<string, string> = {};
+        result.forEach((t, i) => { perParagraph[`p-${i}`] = t; });
+        onTranslationSaved?.(provider, targetLang, perParagraph);
+        return next;
+      });
     } catch (e) {
       const msg = e instanceof Error ? e.message : "翻譯失敗";
       showToast(msg, { action: { label: "重試", onClick: () => performTranslationRef.current() } });
@@ -86,6 +102,7 @@ export function PagedPreview({ html, pageCount }: PagedPreviewProps) {
 
   // Ref：保持最新版 performTranslation，供 effect 使用（避免 stale closure）
   const performTranslationRef = useRef(performTranslation);
+  const pageChangeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   performTranslationRef.current = performTranslation;
 
   // 使用者是否已主動按過「翻譯」按鈕（換頁自動翻譯的前提）
@@ -113,6 +130,8 @@ export function PagedPreview({ html, pageCount }: PagedPreviewProps) {
     const clamped = Math.max(1, Math.min(page, pageCount));
     setCurrentPage(clamped);
     setInputValue(String(clamped));
+    if (pageChangeTimerRef.current) clearTimeout(pageChangeTimerRef.current);
+    pageChangeTimerRef.current = setTimeout(() => onPageChange?.(clamped), 1000);
   }
 
   const currentTranslations = translationCache[cacheKey];
