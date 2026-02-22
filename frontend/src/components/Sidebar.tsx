@@ -1,0 +1,138 @@
+import { useState } from "react";
+import type { Document, Library } from "../services/libraryApi";
+import { FolderItem } from "./FolderItem";
+
+interface SidebarProps {
+  library: Library;
+  selectedDocId: string | null;
+  activeTags: string[];
+  onSelectDocument: (doc: Document) => void;
+  onCreateFolder: (name: string) => void;
+  onRenameFolder: (id: string, name: string) => void;
+  onDeleteFolder: (id: string) => void;
+  onCreateDocument: (name: string, folderId: string) => void;
+  onRenameDocument: (id: string, name: string) => void;
+  onDeleteDocument: (id: string) => void;
+  onMoveDocument: (docId: string, targetFolderId: string) => void;
+  onUploadDocument: (doc: Document) => void;
+  onCreateTag: (name: string, color: string) => void;
+  onDeleteTag: (id: string) => void;
+  onTagFilterChange: (tagIds: string[]) => void;
+}
+
+export function Sidebar({
+  library,
+  selectedDocId,
+  activeTags,
+  onSelectDocument,
+  onCreateFolder,
+  onMoveDocument,
+  onUploadDocument,
+  onTagFilterChange,
+}: SidebarProps) {
+  const [collapsed, setCollapsed] = useState(false);
+  const [dragDocId, setDragDocId] = useState<string | null>(null);
+
+  const filteredDocs = (folderId: string) => {
+    return library.documents.filter((d) => {
+      if (d.folderId !== folderId) return false;
+      if (activeTags.length === 0) return true;
+      return activeTags.every((tid) => d.tagIds.includes(tid));
+    });
+  };
+
+  return (
+    <div
+      className={[
+        "flex flex-shrink-0 flex-col border-r border-washi-border bg-paper transition-all",
+        collapsed ? "w-10" : "w-64",
+      ].join(" ")}
+    >
+      {/* Header — toggle button 始終在 DOM 中 */}
+      <div className="flex items-center justify-between border-b border-washi-border px-2 py-2">
+        {!collapsed && (
+          <span className="text-xs font-semibold uppercase tracking-wider text-ink-light">
+            文件庫
+          </span>
+        )}
+        <button
+          aria-label={collapsed ? "展開側邊欄" : "收合側邊欄"}
+          onClick={() => setCollapsed((v) => !v)}
+          className="ml-auto rounded p-1 text-ink-light hover:text-vermilion"
+        >
+          {collapsed ? "☰" : "←"}
+        </button>
+      </div>
+
+      {!collapsed && (
+        <>
+          {/* Tag Filter */}
+          {library.tags.length > 0 && (
+            <div className="flex flex-wrap gap-1 border-b border-washi-border px-3 py-2">
+              {library.tags.map((tag) => {
+                const active = activeTags.includes(tag.id);
+                return (
+                  <button
+                    key={tag.id}
+                    onClick={() =>
+                      onTagFilterChange(
+                        active
+                          ? activeTags.filter((id) => id !== tag.id)
+                          : [...activeTags, tag.id],
+                      )
+                    }
+                    className={[
+                      "rounded-full px-2 py-0.5 text-[11px] font-medium transition-all",
+                      active ? "text-white ring-2 ring-offset-1" : "opacity-60 hover:opacity-100",
+                    ].join(" ")}
+                    style={{ backgroundColor: tag.color }}
+                  >
+                    {tag.name}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+
+          {/* Folder List */}
+          <div className="flex-1 overflow-y-auto px-2 py-2">
+            {library.folders.map((folder) => (
+              <FolderItem
+                key={folder.id}
+                folder={folder}
+                documents={filteredDocs(folder.id)}
+                selectedDocId={selectedDocId}
+                onSelectDocument={(doc) => {
+                  if (doc.htmlFile) onSelectDocument(doc);
+                  else onUploadDocument(doc);
+                }}
+                onDocumentContextMenu={() => {}}
+                onDocumentDragStart={(e, doc) => {
+                  setDragDocId(doc.id);
+                  e.dataTransfer.effectAllowed = "move";
+                }}
+                onDrop={(_, folderId) => {
+                  if (dragDocId) onMoveDocument(dragDocId, folderId);
+                  setDragDocId(null);
+                }}
+              />
+            ))}
+          </div>
+
+          {/* Footer */}
+          <div className="border-t border-washi-border px-3 py-2">
+            <button
+              onClick={() => {
+                const name = window.prompt("資料夾名稱");
+                if (name?.trim()) onCreateFolder(name.trim());
+              }}
+              className="w-full rounded border border-dashed border-washi-border py-1 text-xs text-ink-light transition-colors hover:border-vermilion hover:text-vermilion"
+            >
+              + 新增資料夾
+            </button>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
