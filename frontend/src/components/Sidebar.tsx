@@ -1,6 +1,8 @@
 import { useState } from "react";
 import type { Document, Library } from "../services/libraryApi";
 import { FolderItem } from "./FolderItem";
+import { DocumentContextMenu } from "./DocumentContextMenu";
+import { TagManager } from "./TagManager";
 
 interface SidebarProps {
   library: Library;
@@ -26,12 +28,20 @@ export function Sidebar({
   activeTags,
   onSelectDocument,
   onCreateFolder,
+  onRenameDocument,
+  onDeleteDocument,
   onMoveDocument,
   onUploadDocument,
+  onCreateTag,
+  onDeleteTag,
   onTagFilterChange,
 }: SidebarProps) {
   const [collapsed, setCollapsed] = useState(false);
   const [dragDocId, setDragDocId] = useState<string | null>(null);
+  const [contextMenu, setContextMenu] = useState<{
+    doc: Document; x: number; y: number;
+  } | null>(null);
+  const [showTagManager, setShowTagManager] = useState(false);
 
   const filteredDocs = (folderId: string) => {
     return library.documents.filter((d) => {
@@ -106,7 +116,7 @@ export function Sidebar({
                   if (doc.htmlFile) onSelectDocument(doc);
                   else onUploadDocument(doc);
                 }}
-                onDocumentContextMenu={() => {}}
+                onDocumentContextMenu={(e, doc) => setContextMenu({ doc, x: e.clientX, y: e.clientY })}
                 onDocumentDragStart={(e, doc) => {
                   setDragDocId(doc.id);
                   e.dataTransfer.effectAllowed = "move";
@@ -130,8 +140,35 @@ export function Sidebar({
             >
               + 新增資料夾
             </button>
+            <button
+              onClick={() => setShowTagManager(true)}
+              className="mt-1 w-full rounded border border-dashed border-washi-border py-1 text-xs text-ink-light transition-colors hover:border-vermilion hover:text-vermilion"
+            >
+              🏷 管理 Tag
+            </button>
           </div>
         </>
+      )}
+      {contextMenu && (
+        <DocumentContextMenu
+          doc={contextMenu.doc}
+          folders={library.folders}
+          x={contextMenu.x}
+          y={contextMenu.y}
+          onClose={() => setContextMenu(null)}
+          onRename={(id, name) => { onRenameDocument(id, name); setContextMenu(null); }}
+          onDelete={(id) => { onDeleteDocument(id); setContextMenu(null); }}
+          onMove={(docId, folderId) => { onMoveDocument(docId, folderId); setContextMenu(null); }}
+          onUpload={(doc) => { onUploadDocument(doc); setContextMenu(null); }}
+        />
+      )}
+      {showTagManager && (
+        <TagManager
+          tags={library.tags}
+          onCreateTag={onCreateTag}
+          onDeleteTag={onDeleteTag}
+          onClose={() => setShowTagManager(false)}
+        />
       )}
     </div>
   );
