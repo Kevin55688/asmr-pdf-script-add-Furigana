@@ -7,22 +7,20 @@
 
 - **專案名稱**：PDF 振り仮名標注工具 (asmr_pdf_script_add_Furigana)
 - **技術棧**：Python (FastAPI + PyMuPDF + fugashi/MeCab) / React + TypeScript (Vite)
-- **最後更新**：2026-02-22（修復 FolderItem group-hover：🏷 按鈕現在可正常顯示）
+- **最後更新**：2026-02-22（新增資料夾右鍵選單設計與實作計畫）
 
-## 專案狀態：✅ Issue 2 修復完成（翻譯快取持久化）
+## 專案狀態：🚧 資料夾右鍵選單開發中（3 Tasks）
 
-> 設計文件：`docs/plans/2026-02-22-bugfix-tag-translation-design.md`
-> 實作計畫：`docs/plans/2026-02-22-bugfix-tag-translation-plan.md`
+> 設計文件：`docs/plans/2026-02-22-folder-context-menu-design.md`
+> 實作計畫：`docs/plans/2026-02-22-folder-context-menu-plan.md`
 
 ## 待完成項目
 
-### Bug Fix：Tag 資料夾化 + 翻譯快取修復（5 Tasks）
+### 資料夾右鍵選單（3 Tasks）
 
-- [x] **Task 1**：翻譯快取修復（`PagedPreview.tsx` 解構加入 `cachedTranslations`，補查持久化快取）
-- [x] **Task 2**：後端 Folder 加入 tagIds（`library_service.py` + `routers/library.py`，新增 `update_folder_tags` API）
-- [x] **Task 3**：前端型別 + API 更新（`libraryApi.ts`：`Folder` 加 `tagIds`，新增 `updateFolderTags`）
-- [x] **Task 4**：Sidebar Tag 篩選改為資料夾層級（`Sidebar.tsx` `filteredFolders`、`FolderItem` 加 props、`App.tsx` 傳入 `onUpdateFolderTags`）
-- [x] **Task 5**：FolderItem 加入 Tag 設定 UI（🏷 按鈕 + checkbox 選單 + 色點顯示）
+- [ ] **Task 1**：新建 `FolderContextMenu` 元件（重新命名 / 刪除，5 tests）
+- [ ] **Task 2**：`FolderItem` 加入 `onContextMenu` prop（1 test）
+- [ ] **Task 3**：`Sidebar` 整合 FolderContextMenu、補解構 `onRenameFolder`/`onDeleteFolder`（2 tests）
 
 ## 已完成項目
 
@@ -74,8 +72,7 @@
 
 | # | 嚴重度 | 描述 | 發現日期 | 狀態 |
 |---|--------|------|----------|------|
-| 1 | 中 | 左側選單的資料夾無法設定所屬 Tag，導致無法透過 Tag 篩選整個資料夾 | 2026-02-22 | ✅ 已修復（Task 2-5）|
-| 2 | 中 | 已翻譯過的文本，重新勾選翻譯並選擇供應商後按下翻譯鈕，不會顯示快取內容而是重新呼叫翻譯 API | 2026-02-22 | ✅ 已修復 |
+| — | — | 目前無已知問題 | — | — |
 
 ## 專案結構
 
