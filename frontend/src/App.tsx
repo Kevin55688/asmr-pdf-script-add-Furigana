@@ -2,20 +2,20 @@ import { useState } from "react";
 import { FileUploader } from "./components/FileUploader";
 import { PagedPreview } from "./components/PagedPreview";
 import { ProgressBar } from "./components/ProgressBar";
+import { ToastProvider, useToast } from "./components/Toast";
 import { convertFile } from "./services/api";
 
-type AppState = "idle" | "uploading" | "success" | "error";
+type AppState = "idle" | "uploading" | "success";
 
-function App() {
+function AppContent() {
+  const { showToast } = useToast();
   const [appState, setAppState] = useState<AppState>("idle");
   const [html, setHtml] = useState<string | null>(null);
   const [pageCount, setPageCount] = useState(0);
-  const [error, setError] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string>("");
 
   const handleFileSelect = async (file: File) => {
     setAppState("uploading");
-    setError(null);
     setHtml(null);
     setFileName(file.name);
 
@@ -25,15 +25,14 @@ function App() {
       setPageCount(result.page_count);
       setAppState("success");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "轉換失敗");
-      setAppState("error");
+      showToast(err instanceof Error ? err.message : "轉換失敗");
+      setAppState("idle");
     }
   };
 
   const handleReset = () => {
     setAppState("idle");
     setHtml(null);
-    setError(null);
     setFileName("");
   };
 
@@ -66,17 +65,19 @@ function App() {
 
         {appState === "uploading" && <ProgressBar />}
 
-        {appState === "error" && error && (
-          <div className="mt-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">
-            {error}
-          </div>
-        )}
-
         {appState === "success" && html && (
           <PagedPreview html={html} pageCount={pageCount} />
         )}
       </main>
     </div>
+  );
+}
+
+function App() {
+  return (
+    <ToastProvider>
+      <AppContent />
+    </ToastProvider>
   );
 }
 
