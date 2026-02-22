@@ -159,12 +159,19 @@ function AppContent() {
       translations: Record<string, string>,
     ) => {
       if (!selectedDoc) return;
-      await libApi.saveTranslations(
+      const updated = await libApi.saveTranslations(
         selectedDoc.id,
         provider,
         lang,
         translations,
       );
+      setSelectedDoc(updated);
+      setLibrary((prev) => ({
+        ...prev,
+        documents: prev.documents.map((d) =>
+          d.id === updated.id ? updated : d,
+        ),
+      }));
     },
     [selectedDoc],
   );
