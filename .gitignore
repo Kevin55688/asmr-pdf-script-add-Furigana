@@ -1,3 +1,13 @@
 .claude/settings.local.json
 script.pdf
+script.txt
 .worktrees/
+
+# Python bytecode cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# 環境變數
+backend/.env
