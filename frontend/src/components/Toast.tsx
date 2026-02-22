@@ -16,12 +16,12 @@ interface ToastContextValue {
   showToast: (message: string, options?: { action?: ToastAction; duration?: number }) => void;
 }
 
-const ToastContext = createContext<ToastContextValue | null>(null);
+const ToastContext = createContext<ToastContextValue>({
+  showToast: () => {},
+});
 
 export function useToast(): ToastContextValue {
-  const ctx = useContext(ToastContext);
-  if (!ctx) throw new Error("useToast must be used within ToastProvider");
-  return ctx;
+  return useContext(ToastContext);
 }
 
 export function ToastProvider({ children }: { children: React.ReactNode }) {

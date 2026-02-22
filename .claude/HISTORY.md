@@ -1,3 +1,23 @@
+## [2026-02-22 13:40] @Claude
+
+### 處理項目
+
+- PagedPreview 翻譯錯誤改用 Toast（含重試按鈕）
+
+### 實作方式
+
+- 新增 2 個測試：翻譯失敗時顯示 Toast、Toast 重試按鈕再呼叫 API
+- 修改 Toast.tsx：createContext 改用 no-op 預設值，移除 useToast throw（方便無 Provider 環境的測試）
+- 修改 PagedPreview.tsx：新增 useToast import、移除 translationError state、catch 區塊改用 showToast（含 action: 重試）、移除 inline 錯誤 div
+- 測試設計：點 toggle 開啟翻譯後再點翻譯按鈕，觸發 API 失敗，Toast 顯示錯誤訊息與重試按鈕
+
+### 變更檔案
+
+- `frontend/src/components/PagedPreview.tsx` - 移除 translationError state，catch 區塊改用 showToast
+- `frontend/src/components/PagedPreview.test.tsx` - 新增 2 個 Toast 測試
+- `frontend/src/components/Toast.tsx` - createContext 改用 no-op 預設值
+
+---
 # 變更紀錄
 
 ## [2026-02-22 08:01] @Claude

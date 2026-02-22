@@ -7,9 +7,9 @@
 
 - **專案名稱**：PDF 振り仮名標注工具 (asmr_pdf_script_add_Furigana)
 - **技術棧**：Python (FastAPI + PyMuPDF + fugashi/MeCab) / React + TypeScript (Vite)
-- **最後更新**：2026-02-22（振り仮名 Toggle 與段落翻譯功能全部完成）
+- **最後更新**：2026-02-22（PagedPreview 翻譯錯誤改用 Toast）
 
-## 專案狀態：✅ 振り仮名 Toggle 與翻譯功能完成（5 Tasks）
+## 專案狀態：✅ 翻譯錯誤改用 Toast 完成
 
 ## 待完成項目
 
@@ -17,6 +17,8 @@
 
 ## 已完成項目
 
+- [2026-02-22] PagedPreview 翻譯錯誤改用 Toast：移除 translationError state，catch 區塊改用 showToast（含重試按鈕）；Toast.tsx 改用 no-op 預設 context，40 tests passed
+- [2026-02-22] 翻譯改為手動觸發：移除 toggle 觸發 API 的行為，新增「翻譯」確認按鈕；切換供應商或語言後需重新點按；換頁仍自動翻譯，15 tests passed
 - [2026-02-22] 修復 `hide-ruby` CSS：改為 `visibility: hidden; font-size: 0; line-height: 0`，隱藏振り仮名時版面不跳動，33 tests passed
 - [2026-02-22] 翻譯功能 Task 5 完成：`PagedPreview` 新增控制列（振り仮名 toggle、翻譯 toggle、語言選單、供應商選單）、翻譯 cache（React state）、useEffect 觸發翻譯，前端共 33 tests passed
 - [2026-02-22] 翻譯功能 Task 4 完成：`HtmlPreview` 支援 `showRuby` toggle 與段落翻譯顯示（`translations`、`isTranslating` skeleton），`index.css` 加入 `.hide-ruby rt`，9 tests passed，前端共 27 tests passed

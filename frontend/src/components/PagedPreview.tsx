@@ -1,6 +1,7 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { translateTexts } from '../services/api';
-import { HtmlPreview } from './HtmlPreview';
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { translateTexts } from "../services/api";
+import { HtmlPreview } from "./HtmlPreview";
+import { useToast } from "./Toast";
 
 interface PagedPreviewProps {
   html: string;
@@ -8,76 +9,105 @@ interface PagedPreviewProps {
 }
 
 const PROVIDERS = [
-  { value: 'deepl', label: 'DeepL' },
-  { value: 'google', label: 'Google' },
-  { value: 'claude', label: 'Claude AI' },
+  { value: "deepl", label: "DeepL" },
+  { value: "google", label: "Google" },
+  { value: "claude", label: "Claude AI" },
 ] as const;
 
 const LANGUAGES = [
-  { value: 'zh-TW', label: '繁體中文' },
-  { value: 'zh-CN', label: '簡體中文' },
-  { value: 'en', label: 'English' },
-  { value: 'ko', label: '한국어' },
+  { value: "zh-TW", label: "繁體中文" },
+  { value: "zh-CN", label: "簡體中文" },
+  { value: "en", label: "English" },
+  { value: "ko", label: "한국어" },
 ] as const;
 
-type Provider = (typeof PROVIDERS)[number]['value'];
-type Language = (typeof LANGUAGES)[number]['value'];
+type Provider = (typeof PROVIDERS)[number]["value"];
+type Language = (typeof LANGUAGES)[number]["value"];
 
 export function PagedPreview({ html, pageCount }: PagedPreviewProps) {
+  const { showToast } = useToast();
+
   const [currentPage, setCurrentPage] = useState(1);
-  const [inputValue, setInputValue] = useState('1');
+  const [inputValue, setInputValue] = useState("1");
 
   // Toggle 狀態
   const [showRuby, setShowRuby] = useState(true);
   const [showTranslation, setShowTranslation] = useState(false);
-  const [provider, setProvider] = useState<Provider>('deepl');
-  const [targetLang, setTargetLang] = useState<Language>('zh-TW');
+  const [provider, setProvider] = useState<Provider>("deepl");
+  const [targetLang, setTargetLang] = useState<Language>("zh-TW");
 
   // 翻譯 cache：key = "provider|lang|pageNum"
-  const [translationCache, setTranslationCache] = useState<Record<string, string[]>>({});
+  const [translationCache, setTranslationCache] = useState<
+    Record<string, string[]>
+  >({});
   const [isTranslating, setIsTranslating] = useState(false);
-  const [translationError, setTranslationError] = useState<string | null>(null);
 
   // 解析頁面 HTML
   const pages = useMemo(() => {
     const parser = new DOMParser();
-    const doc = parser.parseFromString(html, 'text/html');
-    const sections = doc.querySelectorAll('section.page');
+    const doc = parser.parseFromString(html, "text/html");
+    const sections = doc.querySelectorAll("section.page");
     return Array.from(sections).map((s) => s.outerHTML);
   }, [html]);
 
   // 從當前頁 HTML 提取段落文字（送給翻譯 API）
   const currentPageTexts = useMemo(() => {
-    const pageHtml = pages[currentPage - 1] ?? '';
+    const pageHtml = pages[currentPage - 1] ?? "";
     if (!pageHtml) return [];
     const parser = new DOMParser();
-    const doc = parser.parseFromString(pageHtml, 'text/html');
-    return Array.from(doc.querySelectorAll('p')).map((p) => p.textContent ?? '');
+    const doc = parser.parseFromString(pageHtml, "text/html");
+    return Array.from(doc.querySelectorAll("p")).map(
+      (p) => p.textContent ?? "",
+    );
   }, [pages, currentPage]);
 
   const cacheKey = `${provider}|${targetLang}|${currentPage}`;
 
-  // 翻譯邏輯
-  const fetchTranslation = useCallback(async () => {
-    if (!showTranslation || currentPageTexts.length === 0) return;
+  // 執行翻譯（不自動觸發，需使用者點按「翻譯」按鈕）
+  const performTranslation = useCallback(async () => {
+    if (currentPageTexts.length === 0) return;
     if (translationCache[cacheKey]) return; // cache hit
 
     setIsTranslating(true);
-    setTranslationError(null);
     try {
-      const result = await translateTexts(currentPageTexts, provider, targetLang);
+      const result = await translateTexts(
+        currentPageTexts,
+        provider,
+        targetLang,
+      );
       setTranslationCache((prev) => ({ ...prev, [cacheKey]: result }));
     } catch (e) {
-      setTranslationError(e instanceof Error ? e.message : '翻譯失敗');
+      const msg = e instanceof Error ? e.message : "翻譯失敗";
+      showToast(msg, { action: { label: "重試", onClick: performTranslation } });
     } finally {
       setIsTranslating(false);
     }
-  }, [showTranslation, currentPageTexts, cacheKey, provider, targetLang, translationCache]);
+  }, [currentPageTexts, cacheKey, provider, targetLang, translationCache]);
 
-  // 開啟翻譯、換頁、換語言、換供應商時觸發翻譯
+  // Ref：保持最新版 performTranslation，供 effect 使用（避免 stale closure）
+  const performTranslationRef = useRef(performTranslation);
+  performTranslationRef.current = performTranslation;
+
+  // 使用者是否已主動按過「翻譯」按鈕（換頁自動翻譯的前提）
+  const translationRequestedRef = useRef(false);
+
+  // 切換供應商或語言時重置（需再次手動點按「翻譯」）
   useEffect(() => {
-    fetchTranslation();
-  }, [fetchTranslation]);
+    translationRequestedRef.current = false;
+  }, [provider, targetLang]);
+
+  // 換頁時若已觸發過翻譯，自動取得當頁翻譯
+  useEffect(() => {
+    if (translationRequestedRef.current && showTranslation) {
+      performTranslationRef.current();
+    }
+  }, [currentPage, showTranslation]);
+
+  // 使用者點按「翻譯」按鈕
+  const handleTranslate = useCallback(() => {
+    translationRequestedRef.current = true;
+    performTranslation();
+  }, [performTranslation]);
 
   function goToPage(page: number) {
     const clamped = Math.max(1, Math.min(page, pageCount));
@@ -109,7 +139,7 @@ export function PagedPreview({ html, pageCount }: PagedPreviewProps) {
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             onKeyDown={(e) => {
-              if (e.key === 'Enter') {
+              if (e.key === "Enter") {
                 const n = parseInt(inputValue, 10);
                 goToPage(isNaN(n) ? currentPage : n);
               }
@@ -169,7 +199,9 @@ export function PagedPreview({ html, pageCount }: PagedPreviewProps) {
                 className="rounded border border-washi-border bg-paper px-1 py-0.5 text-ink focus:border-vermilion focus:outline-none"
               >
                 {LANGUAGES.map((l) => (
-                  <option key={l.value} value={l.value}>{l.label}</option>
+                  <option key={l.value} value={l.value}>
+                    {l.label}
+                  </option>
                 ))}
               </select>
             </label>
@@ -183,27 +215,30 @@ export function PagedPreview({ html, pageCount }: PagedPreviewProps) {
                 className="rounded border border-washi-border bg-paper px-1 py-0.5 text-ink focus:border-vermilion focus:outline-none"
               >
                 {PROVIDERS.map((p) => (
-                  <option key={p.value} value={p.value}>{p.label}</option>
+                  <option key={p.value} value={p.value}>
+                    {p.label}
+                  </option>
                 ))}
               </select>
             </label>
+
+            {/* 翻譯確認按鈕 */}
+            <button
+              aria-label="翻譯"
+              onClick={handleTranslate}
+              disabled={isTranslating}
+              className="rounded border border-vermilion px-3 py-1 text-sm font-medium text-vermilion transition-all duration-150 hover:bg-vermilion hover:text-white disabled:cursor-not-allowed disabled:border-washi-border disabled:text-ink-light"
+            >
+              {isTranslating ? "翻譯中…" : "翻譯"}
+            </button>
           </>
         )}
       </div>
 
-      {/* 翻譯錯誤訊息 */}
-      {translationError && (
-        <div className="mx-6 mt-2 rounded bg-red-50 px-3 py-2 text-sm text-red-700">
-          {translationError}
-          <button onClick={fetchTranslation} className="ml-2 underline">
-            重試
-          </button>
-        </div>
-      )}
 
       {/* 內容區 */}
       <HtmlPreview
-        html={pages[currentPage - 1] ?? ''}
+        html={pages[currentPage - 1] ?? ""}
         pageCount={pageCount}
         showRuby={showRuby}
         translations={showTranslation ? currentTranslations : undefined}

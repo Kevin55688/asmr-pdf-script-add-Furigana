@@ -1,6 +1,7 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, it, expect, vi, beforeEach } from "vitest";
+import { ToastProvider } from "./Toast";
 import { PagedPreview } from "./PagedPreview";
 import * as api from "../services/api";
 
@@ -99,25 +100,30 @@ describe("PagedPreview", () => {
     expect(screen.getByLabelText("翻譯")).toBeInTheDocument();
   });
 
-  it("開啟翻譯 switch 時呼叫 translateTexts", async () => {
+  it("開啟翻譯 toggle 時不自動呼叫 translateTexts", async () => {
+    const user = userEvent.setup();
+    const mockTranslate = vi.spyOn(api, "translateTexts").mockResolvedValue([]);
+
+    render(<PagedPreview html={makeHtml(1)} pageCount={1} />);
+    await user.click(screen.getByLabelText("翻譯")); // 開啟 toggle
+
+    expect(mockTranslate).not.toHaveBeenCalled();
+  });
+
+  it("點按「翻譯」按鈕時才呼叫 translateTexts", async () => {
     const user = userEvent.setup();
     const mockTranslate = vi
       .spyOn(api, "translateTexts")
       .mockResolvedValue(["翻譯結果"]);
 
     render(<PagedPreview html={makeHtml(1)} pageCount={1} />);
-    await user.click(screen.getByLabelText("翻譯"));
+    await user.click(screen.getByLabelText("翻譯")); // 開啟 toggle（不呼叫 API）
+    expect(mockTranslate).not.toHaveBeenCalled();
 
+    await user.click(screen.getByRole("button", { name: "翻譯" })); // 點按鈕
     await waitFor(() => {
       expect(mockTranslate).toHaveBeenCalledTimes(1);
     });
-  });
-
-  it("關閉翻譯 switch 時不呼叫 translateTexts", async () => {
-    const mockTranslate = vi.spyOn(api, "translateTexts").mockResolvedValue([]);
-    render(<PagedPreview html={makeHtml(1)} pageCount={1} />);
-    // 不點 switch，直接確認沒有呼叫
-    expect(mockTranslate).not.toHaveBeenCalled();
   });
 
   it("同一頁再次開啟翻譯不重複呼叫 API（cache）", async () => {
@@ -127,18 +133,19 @@ describe("PagedPreview", () => {
       .mockResolvedValue(["翻譯結果"]);
 
     render(<PagedPreview html={makeHtml(1)} pageCount={1} />);
-    const toggleBtn = screen.getByLabelText("翻譯");
+    const toggleCheckbox = screen.getByLabelText("翻譯");
 
-    await user.click(toggleBtn); // 開啟 → 呼叫 API
+    await user.click(toggleCheckbox); // 開啟 toggle
+    await user.click(screen.getByRole("button", { name: "翻譯" })); // 點按鈕 → API
     await waitFor(() => expect(mockTranslate).toHaveBeenCalledTimes(1));
 
-    await user.click(toggleBtn); // 關閉
-    await user.click(toggleBtn); // 再開啟 → 應使用 cache，不再呼叫
+    await user.click(toggleCheckbox); // 關閉
+    await user.click(toggleCheckbox); // 再開啟 → effect 觸發，但 cache hit，不再呼叫
 
     expect(mockTranslate).toHaveBeenCalledTimes(1);
   });
 
-  it("切換語言時重新呼叫翻譯 API", async () => {
+  it("切換語言後需重新點按「翻譯」才呼叫 API", async () => {
     const user = userEvent.setup();
     const mockTranslate = vi
       .spyOn(api, "translateTexts")
@@ -146,10 +153,54 @@ describe("PagedPreview", () => {
 
     render(<PagedPreview html={makeHtml(1)} pageCount={1} />);
     await user.click(screen.getByLabelText("翻譯")); // 開啟翻譯
+    await user.click(screen.getByRole("button", { name: "翻譯" })); // 第一次翻譯
     await waitFor(() => expect(mockTranslate).toHaveBeenCalledTimes(1));
 
-    // 切換語言
+    // 切換語言後不自動呼叫
     await user.selectOptions(screen.getByLabelText("目標語言"), "en");
+    expect(mockTranslate).toHaveBeenCalledTimes(1);
+
+    // 需再次點按「翻譯」
+    await user.click(screen.getByRole("button", { name: "翻譯" }));
     await waitFor(() => expect(mockTranslate).toHaveBeenCalledTimes(2));
+  });
+
+  it("翻譯失敗時顯示 Toast 錯誤訊息", async () => {
+    const user = userEvent.setup();
+    vi.spyOn(api, "translateTexts").mockRejectedValue(new Error("API 金鑰無效"));
+
+    render(
+      <ToastProvider>
+        <PagedPreview html={makeHtml(1)} pageCount={1} />
+      </ToastProvider>,
+    );
+    await user.click(screen.getByLabelText("翻譯"));
+    await user.click(screen.getByRole("button", { name: "翻譯" }));
+
+    await waitFor(() => {
+      expect(screen.getByText("API 金鑰無效")).toBeInTheDocument();
+    });
+  });
+
+  it("翻譯失敗 Toast 顯示重試按鈕，點擊後重新呼叫 API", async () => {
+    const user = userEvent.setup();
+    const mockTranslate = vi
+      .spyOn(api, "translateTexts")
+      .mockRejectedValue(new Error("網路錯誤"));
+
+    render(
+      <ToastProvider>
+        <PagedPreview html={makeHtml(1)} pageCount={1} />
+      </ToastProvider>,
+    );
+    await user.click(screen.getByLabelText("翻譯"));
+    await user.click(screen.getByRole("button", { name: "翻譯" }));
+
+    await waitFor(() => {
+      expect(screen.getByText("重試")).toBeInTheDocument();
+    });
+
+    await user.click(screen.getByText("重試"));
+    expect(mockTranslate).toHaveBeenCalledTimes(2);
   });
 });
