@@ -17,6 +17,7 @@
 
 ## 已完成項目
 
+- [2026-02-22] 修復 `hide-ruby` CSS：改為 `visibility: hidden; font-size: 0; line-height: 0`，隱藏振り仮名時版面不跳動，33 tests passed
 - [2026-02-22] 翻譯功能 Task 5 完成：`PagedPreview` 新增控制列（振り仮名 toggle、翻譯 toggle、語言選單、供應商選單）、翻譯 cache（React state）、useEffect 觸發翻譯，前端共 33 tests passed
 - [2026-02-22] 翻譯功能 Task 4 完成：`HtmlPreview` 支援 `showRuby` toggle 與段落翻譯顯示（`translations`、`isTranslating` skeleton），`index.css` 加入 `.hide-ruby rt`，9 tests passed，前端共 27 tests passed
 - [2026-02-21] 翻譯功能 Task 3 完成：前端 `translateTexts` API 函式，27 tests passed

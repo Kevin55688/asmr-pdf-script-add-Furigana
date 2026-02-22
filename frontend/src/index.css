@@ -16,7 +16,9 @@
   100% { transform: translateX(200%);  width: 40%; }
 }
 
-/* 振り仮名隱藏 */
+/* 振り仮名隱藏：保留佔位空間，避免顯示/隱藏時版面跳動 */
 .hide-ruby rt {
-  display: none;
+  visibility: hidden;
+  font-size: 0;
+  line-height: 0;
 }
