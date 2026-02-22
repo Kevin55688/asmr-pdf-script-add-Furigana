@@ -7,9 +7,9 @@
 
 - **專案名稱**：PDF 振り仮名標注工具 (asmr_pdf_script_add_Furigana)
 - **技術棧**：Python (FastAPI + PyMuPDF + fugashi/MeCab) / React + TypeScript (Vite)
-- **最後更新**：2026-02-22（PagedPreview 翻譯錯誤改用 Toast）
+- **最後更新**：2026-02-22（API 錯誤 Toast 通知功能完成）
 
-## 專案狀態：✅ 翻譯錯誤改用 Toast 完成
+## 專案狀態：✅ API 錯誤 Toast 通知完成
 
 ## 待完成項目
 
@@ -17,6 +17,7 @@
 
 ## 已完成項目
 
+- [2026-02-22] API 錯誤 Toast 通知完成：新增 Toast.tsx（ToastProvider + useToast hook），App.tsx convert 錯誤改用 Toast，PagedPreview.tsx 翻譯錯誤改用 Toast（含重試按鈕），40 tests passed
 - [2026-02-22] PagedPreview 翻譯錯誤改用 Toast：移除 translationError state，catch 區塊改用 showToast（含重試按鈕）；Toast.tsx 改用 no-op 預設 context，40 tests passed
 - [2026-02-22] 翻譯改為手動觸發：移除 toggle 觸發 API 的行為，新增「翻譯」確認按鈕；切換供應商或語言後需重新點按；換頁仍自動翻譯，15 tests passed
 - [2026-02-22] 修復 `hide-ruby` CSS：改為 `visibility: hidden; font-size: 0; line-height: 0`，隱藏振り仮名時版面不跳動，33 tests passed
