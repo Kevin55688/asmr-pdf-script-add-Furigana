@@ -217,6 +217,70 @@ describe("Sidebar", () => {
     expect(onUpdateFolderTags).toHaveBeenCalledWith("f-001", ["t-001"]);
   });
 
+  it("shows FolderContextMenu on folder right-click", async () => {
+    const lib: Library = {
+      folders: [{ id: "f-001", name: "ASMR", order: 0 }],
+      documents: [],
+      tags: [],
+    };
+    render(
+      <Sidebar
+        library={lib}
+        selectedDocId={null}
+        activeTags={[]}
+        onSelectDocument={noop}
+        onCreateFolder={noop}
+        onRenameFolder={noop}
+        onDeleteFolder={noop}
+        onCreateDocument={noop}
+        onRenameDocument={noop}
+        onDeleteDocument={noop}
+        onMoveDocument={noop}
+        onUploadDocument={noop}
+        onCreateTag={noop}
+        onDeleteTag={noop}
+        onTagFilterChange={noop}
+        onUpdateFolderTags={noop}
+      />,
+    );
+    fireEvent.contextMenu(screen.getByText("ASMR"));
+    expect(await screen.findByText("重新命名")).toBeInTheDocument();
+    expect(screen.getByText("刪除")).toBeInTheDocument();
+  });
+
+  it("calls onRenameFolder via context menu", async () => {
+    const onRenameFolder = vi.fn();
+    vi.stubGlobal("prompt", vi.fn().mockReturnValueOnce("新名稱"));
+    const lib: Library = {
+      folders: [{ id: "f-001", name: "ASMR", order: 0 }],
+      documents: [],
+      tags: [],
+    };
+    render(
+      <Sidebar
+        library={lib}
+        selectedDocId={null}
+        activeTags={[]}
+        onSelectDocument={noop}
+        onCreateFolder={noop}
+        onRenameFolder={onRenameFolder}
+        onDeleteFolder={noop}
+        onCreateDocument={noop}
+        onRenameDocument={noop}
+        onDeleteDocument={noop}
+        onMoveDocument={noop}
+        onUploadDocument={noop}
+        onCreateTag={noop}
+        onDeleteTag={noop}
+        onTagFilterChange={noop}
+        onUpdateFolderTags={noop}
+      />,
+    );
+    fireEvent.contextMenu(screen.getByText("ASMR"));
+    fireEvent.click(await screen.findByText("重新命名"));
+    expect(onRenameFolder).toHaveBeenCalledWith("f-001", "新名稱");
+  });
+
   it("tag 篩選隱藏不符合的資料夾", () => {
     const libraryWithTag: Library = {
       ...mockLibrary,

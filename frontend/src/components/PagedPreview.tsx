@@ -82,7 +82,7 @@ export function PagedPreview({
     // 檢查持久化快取
     const persistedLang = cachedTranslations?.[provider]?.[targetLang];
     if (persistedLang) {
-      const cached = currentPageTexts.map((_, i) => persistedLang[`p-${i}`] ?? "");
+      const cached = currentPageTexts.map((_, i) => persistedLang[`${currentPage}|p-${i}`] ?? "");
       if (cached.some((t) => t)) {
         setTranslationCache((prev) => ({ ...prev, [cacheKey]: cached }));
         return;
@@ -99,7 +99,7 @@ export function PagedPreview({
       setTranslationCache((prev) => {
         const next = { ...prev, [cacheKey]: result };
         const perParagraph: Record<string, string> = {};
-        result.forEach((t, i) => { perParagraph[`p-${i}`] = t; });
+        result.forEach((t, i) => { perParagraph[`${currentPage}|p-${i}`] = t; });
         onTranslationSaved?.(provider, targetLang, perParagraph);
         return next;
       });

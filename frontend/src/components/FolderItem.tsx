@@ -13,6 +13,7 @@ interface Props {
   onDrop: (e: React.DragEvent, folderId: string) => void;
   onAddDocument: (folderId: string, name: string) => void;
   onUpdateFolderTags: (folderId: string, tagIds: string[]) => void;
+  onContextMenu?: (e: React.MouseEvent, folder: Folder) => void;
 }
 
 export function FolderItem({
@@ -26,6 +27,7 @@ export function FolderItem({
   onDrop,
   onAddDocument,
   onUpdateFolderTags,
+  onContextMenu,
 }: Props) {
   const [expanded, setExpanded] = useState(true);
   const [isDragOver, setIsDragOver] = useState(false);
@@ -49,6 +51,10 @@ export function FolderItem({
             : "hover:bg-washi-border/40",
         ].join(" ")}
         onClick={() => setExpanded((v) => !v)}
+        onContextMenu={(e) => {
+          e.preventDefault();
+          onContextMenu?.(e, folder);
+        }}
         onDragOver={(e) => {
           e.preventDefault();
           setIsDragOver(true);

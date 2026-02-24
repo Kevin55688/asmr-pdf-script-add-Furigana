@@ -15,14 +15,15 @@
 
 開發以下功能時，**必須先讀取對應的設計文件**：
 
-| 功能 | 設計文件 | 實作計畫 |
-|------|---------|---------|
-| PDF 振り仮名標注工具 | `docs/plans/2026-02-13-furigana-tool-design.md` | `docs/plans/2026-02-13-furigana-tool-plan.md` |
+| 功能 | 設計文件 | 後端計畫 | 前端計畫 |
+|------|---------|---------|---------|
+| PDF 振り仮名標注工具 | `docs/plans/2026-02-13-furigana-tool-design.md` | — | `docs/plans/2026-02-13-furigana-tool-frontend.md` |
+| 資料夾右鍵選單 | `docs/plans/2026-02-22-folder-context-menu-design.md` | — | `docs/plans/2026-02-22-folder-context-menu-frontend.md` |
 
 **開發流程**：
 
-1. 讀取設計文件，了解組件規格
-2. 讀取實作計畫，按照 Task 順序逐步執行（TDD 流程）
+1. 讀取設計文件，了解組件規格與 API 合約
+2. **後端 session** 讀取後端計畫、**前端 session** 讀取前端計畫，按 Task 順序逐步執行（TDD 流程）
 3. 完成後更新設計文件中的狀態（⏳ → ✅）
 
 ## 任務完成檢查（每次任務結束必做）

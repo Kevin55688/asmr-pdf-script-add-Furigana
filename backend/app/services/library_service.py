@@ -169,7 +169,8 @@ def update_translations(
     library = load_library()
     for doc in library["documents"]:
         if doc["id"] == doc_id:
-            doc.setdefault("translations", {}).setdefault(provider, {})[lang] = translations
+            current = doc.setdefault("translations", {}).setdefault(provider, {}).setdefault(lang, {})
+            current.update(translations)
             save_library(library)
             return doc
     return None

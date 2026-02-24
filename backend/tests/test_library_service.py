@@ -130,6 +130,17 @@ def test_update_translations_merges_providers():
     assert trans["claude"]["zh-TW"] == {"p-0": "B"}
 
 
+def test_update_translations_merges_paragraphs_across_pages():
+    """同一 provider/lang 不同頁的翻譯應累加，不應覆蓋"""
+    folder = lib_svc.create_folder("f")
+    doc = lib_svc.create_document("d", folder["id"])
+    lib_svc.update_translations(doc["id"], "deepl", "zh-TW", {"1|p-0": "第1頁翻譯"})
+    lib_svc.update_translations(doc["id"], "deepl", "zh-TW", {"2|p-0": "第2頁翻譯"})
+    lib = lib_svc.load_library()
+    trans = lib["documents"][0]["translations"]
+    assert trans["deepl"]["zh-TW"] == {"1|p-0": "第1頁翻譯", "2|p-0": "第2頁翻譯"}
+
+
 def test_create_folder_has_tag_ids():
     folder = lib_svc.create_folder("測試資料夾")
     assert "tagIds" in folder

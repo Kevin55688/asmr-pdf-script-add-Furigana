@@ -84,7 +84,7 @@ describe("App", () => {
     // saveTranslations 回傳帶有翻譯的文件
     const docWithTranslations: libraryApi.Document = {
       ...doc1,
-      translations: { deepl: { "zh-TW": { "p-0": "快取翻譯" } } },
+      translations: { deepl: { "zh-TW": { "1|p-0": "快取翻譯" } } },
     };
     vi.mocked(libraryApi.saveTranslations).mockResolvedValue(
       docWithTranslations,

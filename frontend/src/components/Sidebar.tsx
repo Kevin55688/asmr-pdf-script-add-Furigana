@@ -1,7 +1,8 @@
 import { useState } from "react";
-import type { Document, Library } from "../services/libraryApi";
+import type { Document, Folder, Library } from "../services/libraryApi";
 import { FolderItem } from "./FolderItem";
 import { DocumentContextMenu } from "./DocumentContextMenu";
+import { FolderContextMenu } from "./FolderContextMenu";
 import { TagManager } from "./TagManager";
 
 interface SidebarProps {
@@ -29,6 +30,8 @@ export function Sidebar({
   activeTags,
   onSelectDocument,
   onCreateFolder,
+  onRenameFolder,
+  onDeleteFolder,
   onCreateDocument,
   onRenameDocument,
   onDeleteDocument,
@@ -47,6 +50,11 @@ export function Sidebar({
     y: number;
   } | null>(null);
   const [showTagManager, setShowTagManager] = useState(false);
+  const [folderContextMenu, setFolderContextMenu] = useState<{
+    folder: Folder;
+    x: number;
+    y: number;
+  } | null>(null);
 
   const filteredFolders = () => {
     if (activeTags.length === 0) return library.folders;
@@ -140,6 +148,9 @@ export function Sidebar({
                   onCreateDocument(name, folderId)
                 }
                 onUpdateFolderTags={onUpdateFolderTags}
+                onContextMenu={(e, f) =>
+                  setFolderContextMenu({ folder: f, x: e.clientX, y: e.clientY })
+                }
               />
             ))}
           </div>
@@ -186,6 +197,22 @@ export function Sidebar({
           onUpload={(doc) => {
             onUploadDocument(doc);
             setContextMenu(null);
+          }}
+        />
+      )}
+      {folderContextMenu && (
+        <FolderContextMenu
+          folder={folderContextMenu.folder}
+          x={folderContextMenu.x}
+          y={folderContextMenu.y}
+          onClose={() => setFolderContextMenu(null)}
+          onRename={(id, name) => {
+            onRenameFolder(id, name);
+            setFolderContextMenu(null);
+          }}
+          onDelete={(id) => {
+            onDeleteFolder(id);
+            setFolderContextMenu(null);
           }}
         />
       )}

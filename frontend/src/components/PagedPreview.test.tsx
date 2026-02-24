@@ -167,7 +167,9 @@ describe("PagedPreview", () => {
 
   it("翻譯失敗時顯示 Toast 錯誤訊息", async () => {
     const user = userEvent.setup();
-    vi.spyOn(api, "translateTexts").mockRejectedValue(new Error("API 金鑰無效"));
+    vi.spyOn(api, "translateTexts").mockRejectedValue(
+      new Error("API 金鑰無效"),
+    );
 
     render(
       <ToastProvider>
@@ -210,13 +212,43 @@ describe("PagedPreview cachedTranslations", () => {
     vi.restoreAllMocks();
   });
 
+  it("第2頁不應沿用第1頁的持久化翻譯，應呼叫 API", async () => {
+    const user = userEvent.setup();
+    const mockTranslate = vi
+      .spyOn(api, "translateTexts")
+      .mockResolvedValue(["第2頁翻譯"]);
+
+    // 模擬第1頁已翻譯後的持久化快取（無頁碼區隔的舊格式）
+    const cachedTranslations = {
+      deepl: { "zh-TW": { "p-0": "第1頁的翻譯" } },
+    };
+
+    render(
+      <PagedPreview
+        html={makeHtml(2)}
+        pageCount={2}
+        cachedTranslations={cachedTranslations}
+        onTranslationSaved={vi.fn()}
+      />,
+    );
+
+    await user.click(screen.getByLabelText("翻譯")); // 開啟翻譯 toggle
+    await user.click(screen.getByRole("button", { name: /下一頁/ })); // 換到第2頁
+    await user.click(screen.getByRole("button", { name: "翻譯" })); // 點翻譯
+
+    // 第2頁無快取，應呼叫 API
+    await waitFor(() => expect(mockTranslate).toHaveBeenCalledTimes(1));
+  });
+
   it("cachedTranslations 有資料時點翻譯不呼叫 API", async () => {
     const user = userEvent.setup();
-    const mockTranslate = vi.spyOn(api, "translateTexts").mockResolvedValue(["翻訳API呼ばれた"]);
+    const mockTranslate = vi
+      .spyOn(api, "translateTexts")
+      .mockResolvedValue(["翻訳API呼ばれた"]);
 
     const singlePageHtml = `<section class="page"><p>テスト</p></section>`;
     const cachedTranslations = {
-      deepl: { "zh-TW": { "p-0": "測試（快取）" } },
+      deepl: { "zh-TW": { "1|p-0": "測試（快取）" } },
     };
 
     render(
@@ -225,7 +257,7 @@ describe("PagedPreview cachedTranslations", () => {
         pageCount={1}
         cachedTranslations={cachedTranslations}
         onTranslationSaved={vi.fn()}
-      />
+      />,
     );
 
     await user.click(screen.getByLabelText("翻譯"));
@@ -238,8 +270,9 @@ describe("PagedPreview cachedTranslations", () => {
 
 describe("PagedPreview persistence props", () => {
   it("starts at initialPage when provided", () => {
-    const html = Array.from({ length: 5 }, (_, i) =>
-      `<section class="page"><p>Page ${i + 1}</p></section>`
+    const html = Array.from(
+      { length: 5 },
+      (_, i) => `<section class="page"><p>Page ${i + 1}</p></section>`,
     ).join("");
     render(<PagedPreview html={html} pageCount={5} initialPage={3} />);
     expect(screen.getByDisplayValue("3")).toBeInTheDocument();
@@ -247,10 +280,13 @@ describe("PagedPreview persistence props", () => {
 
   it("calls onPageChange when page changes", async () => {
     const onPageChange = vi.fn();
-    const html = Array.from({ length: 3 }, (_, i) =>
-      `<section class="page"><p>Page ${i + 1}</p></section>`
+    const html = Array.from(
+      { length: 3 },
+      (_, i) => `<section class="page"><p>Page ${i + 1}</p></section>`,
     ).join("");
-    render(<PagedPreview html={html} pageCount={3} onPageChange={onPageChange} />);
+    render(
+      <PagedPreview html={html} pageCount={3} onPageChange={onPageChange} />,
+    );
     fireEvent.click(screen.getByRole("button", { name: "下一頁" }));
     // debounce: wait 1.1s
     await new Promise((r) => setTimeout(r, 1100));
